@@ -9,7 +9,8 @@ class ShopOwner(models.Model):
     phone = models.IntegerField(null=False, unique=True, validators=[
                                 MinLengthValidator(4), MaxLengthValidator(12)])
     password = models.CharField(max_length=128, null=False)
-    joined = models.DateTimeField(default=datetime.datetime.now)
+    joined = models.DateTimeField(
+        default=datetime.datetime.now, auto_now_add=True)
 
 
 class Shop(models.Model):
@@ -18,4 +19,5 @@ class Shop(models.Model):
     owner = models.ForeignKey(
         ShopOwner, on_delete=models.CASCADE, related_name='owner_shops')
     revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    created = models.DateTimeField(default=datetime.datetime.now)
+    created = models.DateTimeField(
+        default=datetime.datetime.now, auto_now_add=True)
