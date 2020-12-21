@@ -1,4 +1,4 @@
-from backend.shop.serializers.customer_serializers import CustomerSerializer
+from ..serializers.customer_serializers import CustomerSerializer
 from rest_framework import serializers
 from ..models.product import Product, ProductCategory, Order
 
