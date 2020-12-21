@@ -6,11 +6,10 @@ import datetime
 class ShopOwner(models.Model):
     first_name = models.CharField(max_length=100, default='')
     last_name = models.CharField(max_length=100, default='')
-    phone = models.IntegerField(null=False, unique=True, validators=[
-                                MinLengthValidator(4), MaxLengthValidator(12)])
+    phone = models.IntegerField(null=False, unique=True)
     password = models.CharField(max_length=128, null=False)
     joined = models.DateTimeField(
-        default=datetime.datetime.now, auto_now_add=True)
+        default=datetime.datetime.now)
 
 
 class Shop(models.Model):
@@ -20,4 +19,4 @@ class Shop(models.Model):
         ShopOwner, on_delete=models.CASCADE, related_name='owner_shops')
     revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     created = models.DateTimeField(
-        default=datetime.datetime.now, auto_now_add=True)
+        default=datetime.datetime.now)
