@@ -4,10 +4,9 @@ from ..models.product import Product, ProductCategory, Order
 
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
-    category = serializers.PrimaryKeyRelatedField(
-        queryset=ProductCategory.objects.all())
-    shop = serializers.HyperlinkedIdentityField(
-        view_name='shop-detail')
+    category = serializers.StringRelatedField()
+    shop = serializers.HyperlinkedRelatedField(
+        read_only=True, view_name='shop-detail')
 
     class Meta:
         model = Product
