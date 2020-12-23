@@ -1,12 +1,12 @@
 from rest_framework.response import Response
 from rest_framework import viewsets
-from rest_framework import status
-from ..models.shop import Shop, ShopOwner
+from ..models.shop import Shop
+from ..models.auth import User
 from ..serializers.shop_serializers import ShopSerializer, ShopOwnerSerializer
 
 
 class ShopOwnerViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = ShopOwner.objects.all()
+    queryset = User.objects.all()
     serializer_class = ShopOwnerSerializer
 
 
