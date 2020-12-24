@@ -1,3 +1,6 @@
+# uploaded images to server
+backend/uploads/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
