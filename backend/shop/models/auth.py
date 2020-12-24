@@ -49,5 +49,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    def auth_token_delete(self):
+        if hasattr(self, 'auth_token'):
+            self.auth_token.delete()
+
     def __str__(self):
         return str(self.phone)
