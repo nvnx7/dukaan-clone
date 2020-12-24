@@ -1,6 +1,5 @@
-from ..serializers.customer_serializers import CustomerSerializer
 from rest_framework import serializers
-from ..models.product import Product, ProductCategory, Order
+from ..models.product import Product, ProductCategory
 
 
 class ProductSerializer(serializers.HyperlinkedModelSerializer):
@@ -18,13 +17,3 @@ class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCategory
         fields = '__all__'
-
-
-class OrderSerializer(serializers.ModelSerializer):
-    customer = CustomerSerializer(read_only=True)
-    product = ProductSerializer(read_only=True)
-
-    class Meta:
-        model = Order
-        fields = ['quantity', 'datetime', 'status',
-                  'delivery_address', 'customer', 'product']
