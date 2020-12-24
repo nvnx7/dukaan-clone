@@ -1,3 +1,4 @@
-from .shop import Shop, ShopOwner
-from .product import Product, ProductCategory, Order
-from .customer import Customer
+from .shop import Shop, User
+from .product import Product, ProductCategory
+from .customer import Customer, Order
+from .auth import User
