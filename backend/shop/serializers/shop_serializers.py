@@ -6,7 +6,7 @@ from ..serializers.product_serializers import ProductSerializer
 
 
 class ShopSerializer(serializers.HyperlinkedModelSerializer):
-    owner = HyperlinkedIdentityField(view_name='owner-detail')
+    owner = HyperlinkedRelatedField(view_name='owner-detail', read_only=True)
     shop_products = ProductSerializer(many=True, read_only=True)
 
     class Meta:
