@@ -1,15 +1,19 @@
-from ..models.shop import Shop
-from django.http import request
-from rest_framework import serializers, status, viewsets
+from django.shortcuts import get_object_or_404
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 # from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 # from rest_framework.authentication import TokenAuthentication
 
 from ..models.customer import Customer, Order
 from ..models.product import Product
+from ..models.shop import Shop
 from ..serializers.customer_serializers import CustomerSerializer, OrderSerializer
 from ..permissions import IsOrderReceiverOrCreateOnly
+# from backend.shop.models import customer
+
+# from backend.shop.models import product
 
 
 # class CustomerViewSet(viewsets.ModelViewSet):
@@ -27,12 +31,33 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         shop_id = kwargs['shop_id']
-        shop = Shop.objects.get(id=shop_id)
+        shop = get_object_or_404(Shop, pk=shop_id)
 
         orders = self.queryset.filter(product__shop=shop)
         serializer = OrderSerializer(
             instance=orders, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def partial_update(self, request, *args, **kwargs):
+        order_id = kwargs['order_id']
+        order = get_object_or_404(self.queryset, pk=order_id)
+
+        serializer = self.serializer_class(
+            instance=order, context={'request': request})
+
+        # copy data to a dict & update status
+        updatedData = dict(serializer.data)
+        updatedData['status'] = request.data.get('status')
+        serializer = self.serializer_class(data=updatedData)
+
+        if serializer.is_valid():
+            # Make sure order status increments in valid order
+            if order.status >= int(request.data.get('status')):
+                raise PermissionDenied()
+            serializer.update(order, serializer.validated_data)
+            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['POST'])
     def create_multiple(self, request, *args, **kwargs):
