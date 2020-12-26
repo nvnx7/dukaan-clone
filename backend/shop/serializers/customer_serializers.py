@@ -8,11 +8,10 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ['first_name', 'last_name', 'phone']
+        read_only_fields = ['first_name', 'last_name', 'phone']
 
     @staticmethod
     def get_or_create(data):
-        # customer = self.Meta.model.objects.get(phone=self.validated_data.get('phone'))
-
         serializer = CustomerSerializer(data=data)
         if serializer.is_valid():
             customer, created = CustomerSerializer.Meta.model.objects.get_or_create(
@@ -25,19 +24,6 @@ class CustomerSerializer(serializers.ModelSerializer):
             print("NOT VALIDATED")
             return None, serializer.errors
 
-        # if not customer:
-        #     customer = self.Meta.model.objects.create()
-        #     return customer
-        # else:
-        #     isSame = (customer.first_name == data.get('first_name')) and (
-        #         customer.last_name == data.get('last_name'))
-
-        #     if isSame:
-        #         return customer
-        #     else:
-        #         customer = self.Meta.model.objects.create()
-        #         return customer
-
 
 class OrderSerializer(serializers.ModelSerializer):
     customer = CustomerSerializer(read_only=True)
@@ -47,3 +33,6 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['quantity', 'date_ordered', 'status',
                   'delivery_address', 'customer', 'product']
+
+        read_only_fields = ['date_ordered',
+                            'delivery_address', 'quantity']

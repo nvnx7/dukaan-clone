@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.relations import HyperlinkedIdentityField, HyperlinkedRelatedField
+from rest_framework.relations import HyperlinkedRelatedField
 from ..models.shop import Shop
 from ..models.auth import User
 from ..serializers.product_serializers import ProductSerializer
@@ -11,8 +11,10 @@ class ShopSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Shop
-        fields = ['title', 'address', 'created',
+        fields = ['title', 'address', 'date_created',
                   'revenue', 'owner', 'shop_products']
+
+        read_only_fields = ['revenue', 'date_created']
 
 
 class ShopOwnerSerializer(serializers.HyperlinkedModelSerializer):
