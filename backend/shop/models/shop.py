@@ -9,5 +9,5 @@ class Shop(models.Model):
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='owner_shops')
     revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    created = models.DateTimeField(
+    date_created = models.DateTimeField(
         default=datetime.datetime.now)
