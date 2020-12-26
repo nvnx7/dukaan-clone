@@ -50,7 +50,8 @@ order_list = customer_views.OrderViewSet.as_view({
 })
 
 order_detail = customer_views.OrderViewSet.as_view({
-    'get': 'retrieve'
+    'get': 'retrieve',
+    'patch': 'partial_update'
 })
 
 urlpatterns = [
@@ -68,6 +69,8 @@ urlpatterns = [
     path('shop/<int:pk>/', shop_detail, name='shop-detail'),
     path('shop/<int:pk>/products/', product_list, name='product-list'),
     path('shop/<int:shop_id>/orders/', order_list, name='order-list'),
+    path('shop/<int:shop_id>/orders/<int:order_id>/',
+         order_detail, name='order-detail'),
 
     path('product/<int:pk>/', product_detail, name='product-detail'),
 
