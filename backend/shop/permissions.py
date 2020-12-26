@@ -1,5 +1,5 @@
-from .models.product import Product
 from .models.shop import Shop
+from .models.customer import Order
 from rest_framework import permissions
 
 
@@ -13,8 +13,6 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         Write permissions only restricted to owner of the Shop
         """
 
-        print("CHECCCCCCCCCKKKKIII")
-
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -22,14 +20,35 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 
 class IsOrderReceiverOrCreateOnly(permissions.BasePermission):
+    """
+    Permissions for interacting with order views. Only POSTing an order is 
+    allowed for any user (customer). Only owner of the shop to which order is made
+    can GET & PATCH (update status only) the Order
+    """
+
     def has_permission(self, request, view):
         if request.method == 'POST':
             return True
-        elif request.method in permissions.SAFE_METHODS:
+        elif request.method in permissions.SAFE_METHODS + ('PATCH',):
+            # If not authenticated deny permission
+            if not request.user.is_authenticated:
+                return False
+
             if 'shop_id' in view.kwargs and view.kwargs['shop_id']:
                 shop_id = view.kwargs['shop_id']
                 shop = Shop.objects.get(pk=shop_id)
-                return shop.owner == request.user
+
+                # If not owner of this shop deny permission
+                if not shop.owner == request.user:
+                    return False
+
+                # If ordered product is not of this owner's shop deny permission
+                if 'order_id' in view.kwargs and view.kwargs['order_id']:
+                    order_id = view.kwargs['order_id']
+                    order = Order.objects.get(pk=order_id)
+                    return order.product.shop == shop
+
+            return True
         else:
             return False
 
