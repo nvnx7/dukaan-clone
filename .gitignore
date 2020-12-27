@@ -35,6 +35,8 @@ npm-debug.log
 .sass-cache
 *.map
 
+.eslintcache
+
 # General
 /{{project_name}}-venv/
 /venv/
