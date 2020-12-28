@@ -25,6 +25,9 @@ __pycache__/
 node_modules/
 npm-debug.log
 
+#build
+/frontend/build/*
+
 # Webpack
 /frontend/bundles/*
 /frontend/webpack_bundles/*
