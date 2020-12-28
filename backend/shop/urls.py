@@ -1,5 +1,5 @@
 from django.urls import path
-from .views.root_view import api_root
+from .views.root_view import index
 from .views import auth_views, shop_views, product_views, customer_views
 
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -55,13 +55,13 @@ order_detail = customer_views.OrderViewSet.as_view({
 })
 
 urlpatterns = [
-    path('', api_root),
+    path('', index, name='index'),
 
     path('signup/', auth_views.SignUpView.as_view(), name='signup'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
 
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
-    path('locked/', auth_views.LockedView.as_view(), name='locked'),
+    # path('locked/', auth_views.LockedView.as_view(), name='locked'),
 
     path('shopowner/<int:pk>/', owner_detail, name='owner-detail'),
     path('shopowner/<int:owner_id>/shops/', shop_list, name='shop-list'),
