@@ -63,5 +63,6 @@ class LoginSerializer(serializers.Serializer):
         return data
 
     def get_auth_token(self, user):
-        token = Token.objects.create(user=user)
+        # token = Token.objects.create(user=user)
+        token, _ = Token.objects.get_or_create(user=user)
         return token.key
