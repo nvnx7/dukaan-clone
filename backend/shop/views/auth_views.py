@@ -35,9 +35,20 @@ class LoginView(APIView):
 
         if serializer.is_valid():
             # Generate a new token and return in response
-            user = User.objects.get(phone=serializer.data.get('phone'))
+            serializer.validated_data.pop('password')
+
+            user = User.objects.get(
+                phone=serializer.validated_data.get('phone'))
             token = serializer.get_auth_token(user)
-            return Response({'token': token}, status=status.HTTP_200_OK)
+            response = {
+                'id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone': user.phone,
+                'date_joined': user.date_joined,
+                'token': token
+            }
+            return Response(response, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
