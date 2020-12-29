@@ -10,8 +10,12 @@ import {
   Button,
   Link,
 } from "@material-ui/core";
-
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
+
+import { Link as RouterLink } from "react-router-dom";
+
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -22,10 +26,10 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {
@@ -33,8 +37,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const validationSchema = yup.object({
+  firstName: yup.string().required("Required!").min(1),
+  lastName: yup.string().required("Required!").min(1),
+  phone: yup
+    .number("Enter phone number")
+    .typeError("Invalid phone!")
+    .required("Phone is required!")
+    .positive("Invalid phone!")
+    .integer("Invalid phone!")
+    .test(
+      "minLength",
+      "Too short!",
+      (val) => val && val.toString().length >= 6
+    ),
+  password: yup.string().required("Password is required!"),
+  confirmPassword: yup
+    .string()
+    .required("Password is required!")
+    .when("password", {
+      is: (value) => (value && value.length > 0 ? true : false),
+      then: yup
+        .string()
+        .oneOf([yup.ref("password")], "Passwords not matching!"),
+    }),
+});
+
 export default function SignUpForm() {
   const classes = useStyles();
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -44,51 +87,89 @@ export default function SignUpForm() {
           <AccountCircleRoundedIcon />
         </Avatar>
         <Typography variant="h6">SIGN UP</Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                autoComplete="fname"
                 name="firstName"
                 variant="outlined"
-                required
                 fullWidth
                 id="firstName"
                 label="First Name"
                 autoFocus
+                value={formik.values.firstName}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.firstName && Boolean(formik.errors.firstName)
+                }
+                helperText={formik.touched.firstName && formik.errors.firstName}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 variant="outlined"
-                required
                 fullWidth
                 id="lastName"
                 label="Last Name"
                 name="lastName"
-                autoComplete="lname"
+                value={formik.values.lastName}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.lastName && Boolean(formik.errors.lastName)
+                }
+                helperText={formik.touched.lastName && formik.errors.lastName}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
-                required
+                margin="normal"
                 fullWidth
                 id="phone"
-                label="Phone"
                 name="phone"
+                label="Phone"
                 type="tel"
+                value={formik.values.phone}
+                onChange={formik.handleChange}
+                error={formik.touched.phone && Boolean(formik.errors.phone)}
+                helperText={formik.touched.phone && formik.errors.phone}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
-                required
                 fullWidth
+                margin="normal"
+                variant="outlined"
+                id="password"
                 name="password"
                 label="Password"
                 type="password"
-                id="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+                helperText={formik.touched.password && formik.errors.password}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                fullWidth
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                id="confirmPassword"
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.confirmPassword &&
+                  Boolean(formik.errors.confirmPassword)
+                }
+                helperText={
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
+                }
               />
             </Grid>
           </Grid>
@@ -101,11 +182,11 @@ export default function SignUpForm() {
           >
             Sign Up
           </Button>
-          <Grid container justify="flex-end">
+          <Grid container justify="flex-end" spacing={2}>
             <Grid item>Already have an account?</Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                Sign in
+              <Link component={RouterLink} to="/login">
+                Login
               </Link>
             </Grid>
           </Grid>

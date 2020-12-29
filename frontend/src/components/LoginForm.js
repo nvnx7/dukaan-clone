@@ -10,8 +10,12 @@ import {
   Button,
   Link,
 } from "@material-ui/core";
-
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
+
+import { Link as RouterLink } from "react-router-dom";
+
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,8 +37,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const validationSchema = yup.object({
+  phone: yup
+    .number("Enter phone number")
+    .typeError("Invalid phone!")
+    .required("Phone is required!")
+    .positive("Invalid phone!")
+    .integer("Invalid phone!")
+    .test(
+      "minLength",
+      "Too short!",
+      (val) => val && val.toString().length >= 6
+    ),
+  password: yup.string().required("Password is required!"),
+});
+
 export default function LoginForm() {
   const classes = useStyles();
+  const formik = useFormik({
+    initialValues: {
+      phone: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -45,42 +74,48 @@ export default function LoginForm() {
         </Avatar>
         <Typography variant="h6">LOGIN</Typography>
 
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
-            required
             fullWidth
             id="phone"
-            label="Phone"
             name="phone"
+            label="Phone"
             type="tel"
-            autoFocus
+            value={formik.values.phone}
+            onChange={formik.handleChange}
+            error={formik.touched.phone && Boolean(formik.errors.phone)}
+            helperText={formik.touched.phone && formik.errors.phone}
           />
           <TextField
-            variant="outlined"
-            margin="normal"
-            required
             fullWidth
+            margin="normal"
+            variant="outlined"
+            id="password"
             name="password"
             label="Password"
             type="password"
-            id="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
           <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
             className={classes.submit}
+            color="primary"
+            variant="contained"
+            fullWidth
+            type="submit"
           >
-            Sign In
+            Login
           </Button>
-          <Grid container>
+
+          <Grid container justify="flex-end" spacing={2}>
             <Grid item>{"Don't have an account?"}</Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Sign Up"}
+              <Link component={RouterLink} to="/signup">
+                Sign Up
               </Link>
             </Grid>
           </Grid>
