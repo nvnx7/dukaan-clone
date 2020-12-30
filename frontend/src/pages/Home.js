@@ -8,8 +8,8 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
 import SignUpForm from "../components/SignUpForm";
 import Alert from "../components/Alert";
-import { userInfo, authError } from "../selectors/authSelectors";
-import { hideError } from "../actions/authActions";
+import { userInfo, authError, authLoading } from "../selectors/authSelectors";
+import { login, register, hideError } from "../actions/authActions";
 
 import bgImage from "../images/dukan.jpg";
 
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Home({ user, error, hideError }) {
+function Home({ user, loading, error, login, register, hideError }) {
   const classes = useStyles();
 
   if (user.authenticated) {
@@ -68,10 +68,10 @@ function Home({ user, error, hideError }) {
         <Paper square>
           <Switch>
             <Route path="/signup">
-              <SignUpForm />
+              <SignUpForm loading={loading} onRegister={register} />
             </Route>
             <Route exact path="/">
-              <LoginForm />
+              <LoginForm loading={loading} onLogin={login} />
             </Route>
           </Switch>
         </Paper>
@@ -94,6 +94,7 @@ const mapStateToProps = (state) => {
   return {
     user: userInfo(state),
     error: authError(state),
+    loading: authLoading(state),
   };
 };
 
@@ -101,6 +102,12 @@ const mapDispatchToProps = (dispatch) => {
   return {
     hideError: () => {
       dispatch(hideError());
+    },
+    login: (user) => {
+      dispatch(login(user));
+    },
+    register: (user) => {
+      dispatch(register(user));
     },
   };
 };

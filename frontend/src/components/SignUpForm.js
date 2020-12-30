@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
@@ -15,9 +14,6 @@ import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import { Link as RouterLink } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-
-import { authLoading } from "../selectors/authSelectors";
-import { register } from "../actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -65,10 +61,10 @@ const validationSchema = yup.object({
     }),
 });
 
-function SignUpForm({ loading, register }) {
+export default function SignUpForm({ loading, onRegister }) {
   const classes = useStyles();
   const onSubmit = (values) => {
-    register(values);
+    onRegister(values);
   };
 
   const formik = useFormik({
@@ -200,19 +196,3 @@ function SignUpForm({ loading, register }) {
     </Container>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    loading: authLoading(state),
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    register: (user) => {
-      dispatch(register(user));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpForm);

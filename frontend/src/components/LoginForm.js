@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
@@ -15,9 +14,6 @@ import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import { Link as RouterLink } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-
-import { authLoading } from "../selectors/authSelectors";
-import { login } from "../actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -54,10 +50,10 @@ const validationSchema = yup.object({
   password: yup.string().required("Password is required!"),
 });
 
-function LoginForm({ loading, login }) {
+export default function LoginForm({ loading, onLogin }) {
   const classes = useStyles();
   const onSubmit = (values) => {
-    login(values);
+    onLogin(values);
   };
 
   const formik = useFormik({
@@ -129,19 +125,3 @@ function LoginForm({ loading, login }) {
     </Container>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    loading: authLoading(state),
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    login: (user) => {
-      dispatch(login(user));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
