@@ -10,6 +10,11 @@ export const AUTH_REGISTER_REQUEST = "AUTH_REGISTER_REQUEST";
 export const AUTH_REGISTER_SUCCESS = "AUTH_REGISTER_SUCCESS";
 export const AUTH_REGISTER_FAILURE = "AUTH_REGISTER_FAILURE";
 
+// Logout actions
+export const AUTH_LOGOUT_REQUEST = "AUTH_LOGOUT_REQUEST";
+export const AUTH_LOGOUT_SUCCESS = "AUTH_LOGOUT_SUCCESS";
+export const AUTH_LOGOUT_FAILURE = "AUTH_LOGOUT_FAILURE";
+
 // Visibility of error message
 export const AUTH_ERROR_HIDE = "AUTH_ERROR_HIDE";
 
@@ -44,12 +49,15 @@ export const login = (userData) => {
         dispatch(loginSuccess(userInfo));
       })
       .catch((error) => {
-        // console.log(error.response.data);
-        let msg = "Error Ocurred!";
-        if (error.response.status === 401) {
-          msg = "Phone or password is incorrect!";
-        }
-        dispatch(loginFailure(msg));
+        const errors = error.response.data;
+        let errorMsg = "";
+        if (errors["phone"]) errorMsg = errors["phone"][0];
+        else if (errors["password"]) errorMsg = errors["password"][0];
+        else if (errors["non_field_errors"])
+          errorMsg = errors["non_field_errors"][0];
+        else errorMsg = "Something went wrong!";
+
+        dispatch(loginFailure(errorMsg));
       });
   };
 };
@@ -80,12 +88,67 @@ export const register = (userData) => {
         password: userData.password,
       })
       .then((response) => {
-        const token = response.data;
-        console.log(token);
-        dispatch(loginSuccess(token.token));
+        const userInfo = response.data;
+        localStorage.setItem("token", userInfo.token);
+        delete userInfo.token;
+        userInfo.authenticated = true;
+        dispatch(registerSuccess(userInfo));
       })
       .catch((error) => {
-        dispatch(loginFailure(error.message));
+        const errors = error.response.data;
+        let errorMsg = "";
+        if (errors["first_name"]) errorMsg = errors["first_name"][0];
+        if (errors["last_name"]) errorMsg = errors["last_name"][0];
+        else if (errors["phone"]) errorMsg = errors["phone"][0];
+        else if (errors["password"]) errorMsg = errors["password"][0];
+        else if (errors["non_field_errors"])
+          errorMsg = errors["non_field_errors"][0];
+        else errorMsg = "Something went wrong!";
+
+        dispatch(registerFailure(errorMsg));
+      });
+  };
+};
+
+// Login action creators
+export const logoutRequest = () => ({
+  type: AUTH_LOGOUT_REQUEST,
+});
+
+export const logoutSuccess = () => ({
+  type: AUTH_LOGOUT_SUCCESS,
+});
+
+export const logoutFailure = (error) => ({
+  type: AUTH_LOGOUT_FAILURE,
+  payload: error,
+});
+
+export const logout = () => {
+  return (dispatch) => {
+    dispatch(logoutRequest());
+    request
+      .post(
+        "/logout/",
+        {},
+        {
+          headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+        }
+      )
+      .then((response) => {
+        localStorage.removeItem("token");
+        dispatch(logoutSuccess());
+      })
+      .catch((error) => {
+        const errors = error.response.data;
+        let errorMsg = "";
+        if (errors["phone"]) errorMsg = errors["phone"][0];
+        else if (errors["password"]) errorMsg = errors["password"][0];
+        else if (errors["non_field_errors"])
+          errorMsg = errors["non_field_errors"][0];
+        else errorMsg = "Something went wrong!";
+
+        dispatch(logoutFailure(errorMsg));
       });
   };
 };
