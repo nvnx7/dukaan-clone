@@ -7,7 +7,7 @@ import { Switch, Route } from "react-router-dom";
 
 import store from "./store";
 
-import Header from "./components/Header";
+import Header from "./containers/Header";
 import Home from "./containers/Home";
 import Dashboard from "./containers/Dashboard";
 
