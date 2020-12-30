@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
@@ -11,11 +12,12 @@ import {
   Link,
 } from "@material-ui/core";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
-
 import { Link as RouterLink } from "react-router-dom";
-
 import { useFormik } from "formik";
 import * as yup from "yup";
+
+import { authLoading } from "../selectors/authSelectors";
+import { login } from "../actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -52,17 +54,19 @@ const validationSchema = yup.object({
   password: yup.string().required("Password is required!"),
 });
 
-export default function LoginForm() {
+function LoginForm({ loading, login }) {
   const classes = useStyles();
+  const onSubmit = (values) => {
+    login(values);
+  };
+
   const formik = useFormik({
     initialValues: {
       phone: "",
       password: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-    },
+    onSubmit,
   });
 
   return (
@@ -107,6 +111,7 @@ export default function LoginForm() {
             variant="contained"
             fullWidth
             type="submit"
+            disabled={loading}
           >
             Login
           </Button>
@@ -124,3 +129,19 @@ export default function LoginForm() {
     </Container>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    loading: authLoading(state),
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: (user) => {
+      dispatch(login(user));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
