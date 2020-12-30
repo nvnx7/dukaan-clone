@@ -8,8 +8,8 @@ import { Switch, Route } from "react-router-dom";
 import store from "./store";
 
 import Header from "./components/Header";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
+import Home from "./containers/Home";
+import Dashboard from "./containers/Dashboard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
