@@ -1,4 +1,4 @@
-import request from "../network";
+import axiosInstance from "../network";
 
 // Login actions
 export const AUTH_LOGIN_REQUEST = "AUTH_LOGIN_REQUEST";
@@ -36,7 +36,7 @@ export const loginFailure = (error) => ({
 export const login = (userData) => {
   return (dispatch) => {
     dispatch(loginRequest());
-    request
+    axiosInstance()
       .post("/login/", {
         phone: userData.phone,
         password: userData.password,
@@ -80,7 +80,7 @@ export const registerFailure = (error) => ({
 export const register = (userData) => {
   return (dispatch) => {
     dispatch(registerRequest());
-    request
+    axiosInstance()
       .post("/signup/", {
         first_name: userData.firstName,
         last_name: userData.lastName,
@@ -127,7 +127,7 @@ export const logoutFailure = (error) => ({
 export const logout = () => {
   return (dispatch) => {
     dispatch(logoutRequest());
-    request
+    axiosInstance()
       .post(
         "/logout/",
         {},

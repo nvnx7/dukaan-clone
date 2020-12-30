@@ -1,11 +1,14 @@
 const axios = require("axios").default;
 
-const config = {
-  baseURL: "http://localhost:8000",
-  // timeout: 1000,
-  // withCredentials: true,
+const BASE_URL = "http://localhost:8000";
+
+const axiosInstance = () => {
+  let config = { baseURL: BASE_URL };
+  const token = localStorage.getItem("token");
+
+  if (token) config = { ...config, Authorization: `Token ${token}` };
+
+  return axios.create(config);
 };
 
-const request = axios.create(config);
-
-export default request;
+export default axiosInstance;
