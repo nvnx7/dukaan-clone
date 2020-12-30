@@ -1,12 +1,15 @@
 import React from "react";
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Typography, Paper } from "@material-ui/core";
+import { Grid, Typography, Paper, Snackbar } from "@material-ui/core";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
-
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import LoginForm from "../components/LoginForm";
 import SignUpForm from "../components/SignUpForm";
+import Alert from "../components/Alert";
+import { userInfo, authError } from "../selectors/authSelectors";
+import { hideError } from "../actions/authActions";
 
 import bgImage from "../images/dukan.jpg";
 
@@ -32,8 +35,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Home() {
+function Home({ user, error, hideError }) {
   const classes = useStyles();
+
+  if (user.authenticated) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <Grid
@@ -60,16 +67,42 @@ export default function Home() {
       <Grid item md={6}>
         <Paper square>
           <Switch>
-            <Redirect exact from="/" to="/login" />
-            <Route path="/login">
-              <LoginForm />
-            </Route>
             <Route path="/signup">
               <SignUpForm />
+            </Route>
+            <Route exact path="/">
+              <LoginForm />
             </Route>
           </Switch>
         </Paper>
       </Grid>
+
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={5000}
+        onClose={hideError}
+      >
+        <Alert severity="error" onClose={hideError}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    user: userInfo(state),
+    error: authError(state),
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    hideError: () => {
+      dispatch(hideError());
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
