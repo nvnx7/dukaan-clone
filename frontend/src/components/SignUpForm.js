@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
@@ -11,11 +12,12 @@ import {
   Link,
 } from "@material-ui/core";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
-
 import { Link as RouterLink } from "react-router-dom";
-
 import { useFormik } from "formik";
 import * as yup from "yup";
+
+import { authLoading } from "../selectors/authSelectors";
+import { register } from "../actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -63,8 +65,12 @@ const validationSchema = yup.object({
     }),
 });
 
-export default function SignUpForm() {
+function SignUpForm({ loading, register }) {
   const classes = useStyles();
+  const onSubmit = (values) => {
+    register(values);
+  };
+
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -74,9 +80,7 @@ export default function SignUpForm() {
       confirmPassword: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-    },
+    onSubmit,
   });
 
   return (
@@ -179,13 +183,14 @@ export default function SignUpForm() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={loading}
           >
             Sign Up
           </Button>
           <Grid container justify="flex-end" spacing={2}>
             <Grid item>Already have an account?</Grid>
             <Grid item>
-              <Link component={RouterLink} to="/login">
+              <Link component={RouterLink} to="/">
                 Login
               </Link>
             </Grid>
@@ -195,3 +200,19 @@ export default function SignUpForm() {
     </Container>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    loading: authLoading(state),
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    register: (user) => {
+      dispatch(register(user));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpForm);
