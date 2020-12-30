@@ -13,6 +13,7 @@ import LocalMallIcon from "@material-ui/icons/LocalMall";
 import { Link as RouterLink } from "react-router-dom";
 
 import { logout } from "../actions/authActions";
+import { userInfo } from "../selectors/authSelectors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Header({ logout }) {
+function Header({ user, logout }) {
   const classes = useStyles();
 
   return (
@@ -36,23 +37,34 @@ function Header({ logout }) {
           DUKAAN
         </Typography>
 
-        <ButtonGroup variant="contained">
-          <Button>
-            <Link component={RouterLink} to="/signup" underline="none">
-              SIGNUP
-            </Link>
+        {user.authenticated ? (
+          <Button variant="contained" onClick={logout}>
+            LOGOUT
           </Button>
-          <Button>
-            <Link component={RouterLink} to="/" underline="none">
-              LOGIN
-            </Link>
-          </Button>
-          <Button onClick={logout}>LOGOUT</Button>
-        </ButtonGroup>
+        ) : (
+          <ButtonGroup variant="contained">
+            <Button>
+              <Link component={RouterLink} to="/signup" underline="none">
+                SIGNUP
+              </Link>
+            </Button>
+            <Button>
+              <Link component={RouterLink} to="/" underline="none">
+                LOGIN
+              </Link>
+            </Button>
+          </ButtonGroup>
+        )}
       </Toolbar>
     </AppBar>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    user: userInfo(state),
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -62,4 +74,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
