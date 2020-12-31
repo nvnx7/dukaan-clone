@@ -128,13 +128,7 @@ export const logout = () => {
   return (dispatch) => {
     dispatch(logoutRequest());
     axiosInstance()
-      .post(
-        "/logout/",
-        {},
-        {
-          headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-        }
-      )
+      .post("/logout/")
       .then((response) => {
         localStorage.removeItem("token");
         dispatch(logoutSuccess());
