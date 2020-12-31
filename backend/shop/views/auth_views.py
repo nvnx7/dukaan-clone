@@ -1,5 +1,6 @@
 from rest_framework.authtoken.models import Token
 from ..serializers.auth_serializers import RegisterSerializer, LoginSerializer
+from ..serializers.shop_serializers import ShopOwnerSerializer
 from ..models.auth import User
 
 from rest_framework import serializers, status
@@ -38,26 +39,31 @@ class LoginView(APIView):
 
     def post(self, request, format=None):
         # Create token & save
-        serializer = LoginSerializer(data=request.data)
+        loginSerializer = LoginSerializer(data=request.data)
 
-        if serializer.is_valid():
+        if loginSerializer.is_valid():
             # Generate a new token and return in response
-            serializer.validated_data.pop('password')
+            loginSerializer.validated_data.pop('password')
 
             user = User.objects.get(
-                phone=serializer.validated_data.get('phone'))
-            token = serializer.get_auth_token()
+                phone=loginSerializer.validated_data.get('phone'))
+            token = loginSerializer.get_auth_token()
+
+            shopOwnerSerializer = ShopOwnerSerializer(
+                instance=user, context={'request': request})
+
             response = {
                 'id': user.id,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'phone': user.phone,
                 'date_joined': user.date_joined,
+                'owner_shops': shopOwnerSerializer.data.get('owner_shops', None),
                 'token': token
             }
             return Response(response, status=status.HTTP_200_OK)
         else:
-            return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(loginSerializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class LogoutView(APIView):
