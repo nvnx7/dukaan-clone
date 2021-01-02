@@ -46,6 +46,7 @@ export const login = (userData) => {
         localStorage.setItem("token", userInfo.token);
         delete userInfo.token;
         userInfo.authenticated = true;
+        localStorage.setItem("user", JSON.stringify(userInfo));
         dispatch(loginSuccess(userInfo));
       })
       .catch((error) => {

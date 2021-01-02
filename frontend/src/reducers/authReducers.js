@@ -13,9 +13,9 @@ import {
 
 const initialState = {
   loading: false,
-  user: {
-    authenticated: false,
-  },
+  user: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : { authenticated: false },
   error: "",
 };
 
