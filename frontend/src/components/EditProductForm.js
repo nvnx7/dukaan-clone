@@ -80,7 +80,8 @@ export default function EditProductForm({
   };
 
   const onSubmit = (values) => {
-    const data = { ...values, image: file };
+    let data = values;
+    if (file) data = { ...data, image: file };
     onSave(data);
   };
 
