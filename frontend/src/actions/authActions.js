@@ -1,4 +1,4 @@
-import axiosInstance from "../network";
+import axiosInstance from "../utils/networkUtils";
 
 // Login actions
 export const AUTH_LOGIN_REQUEST = "AUTH_LOGIN_REQUEST";
