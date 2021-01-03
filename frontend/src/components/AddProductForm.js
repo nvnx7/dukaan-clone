@@ -79,16 +79,14 @@ export default function AddProductForm({ loading, onSave, onCancel }) {
   };
 
   const onSubmit = (values) => {
-    console.log("SUBMITTING");
     const error = validateFile(file);
     if (error) {
       setFile(null);
       setFileError(error);
       return;
     }
-    const vals = { ...values, image: file.name };
-    alert(JSON.stringify(vals));
-    // onSave(vals);
+    const data = { ...values, image: file };
+    onSave(data);
   };
 
   const formik = useFormik({

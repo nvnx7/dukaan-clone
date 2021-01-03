@@ -80,9 +80,8 @@ export default function EditProductForm({
   };
 
   const onSubmit = (values) => {
-    const vals = { ...values, image: file };
-    alert(JSON.stringify(vals));
-    // onSave(vals);
+    const data = { ...values, image: file };
+    onSave(data);
   };
 
   const formik = useFormik({
