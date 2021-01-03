@@ -77,6 +77,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, '../frontend/build/static'),
 ]
 
+MEDIA_ROOT = BASE_DIR
+MEDIA_URL = '/image/download/'
+
+
 WSGI_APPLICATION = 'dukaan.wsgi.application'
 
 
