@@ -8,7 +8,6 @@ const axiosInstance = () => {
 
   if (token)
     config = { ...config, headers: { Authorization: `Token ${token}` } };
-  console.log(config);
 
   return axios.create(config);
 };
