@@ -1,22 +1,28 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { GridListTile, GridListTileBar, IconButton } from "@material-ui/core";
+import {
+  Grid,
+  Typography,
+  Button,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  CardActionArea,
+} from "@material-ui/core";
 import EditRoundedIcon from "@material-ui/icons/EditRounded";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: "4px 4px",
-    borderRadius: "4px",
-    objectPosition: "center",
+    maxWidth: 345,
   },
-  icon: {
-    color: "rgb(255, 255, 255)",
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
   },
-  tileBar: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  img: {
-    width: "200px",
+  actions: {
+    display: "flex",
+    alignItems: "flexEnd",
   },
 }));
 
@@ -32,17 +38,30 @@ export default function EditableProductListTile({
   onClick,
 }) {
   const classes = useStyles();
-
   return (
-    <GridListTile className={classes.root} sm={4} key={id}>
-      <img className={classes.img} src={imageSrc} alt={title} />
-      <GridListTileBar
-        className={classes.tileBar}
-        title={title}
-        subtitle={`Rs. ${price} / ${stock} Available`}
-        actionIcon={
-          <IconButton
-            className={classes.icon}
+    <Grid item xs={12} sm={4} lg={3}>
+      <Card>
+        <CardActionArea>
+          <CardMedia className={classes.media} image={imageSrc} />
+          <CardContent>
+            <Typography gutterBottom variant="h6" component="h2">
+              {title}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+              noWrap
+            >
+              {`Rs. ${price}/${unit} - ${stock} Available`}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions disableSpacing>
+          <Button
+            variant="text"
+            color="primary"
+            startIcon={<EditRoundedIcon />}
             onClick={() =>
               onClick({
                 id,
@@ -56,10 +75,10 @@ export default function EditableProductListTile({
               })
             }
           >
-            <EditRoundedIcon />
-          </IconButton>
-        }
-      />
-    </GridListTile>
+            Edit
+          </Button>
+        </CardActions>
+      </Card>
+    </Grid>
   );
 }
