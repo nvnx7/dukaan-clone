@@ -47,22 +47,6 @@ const validationSchema = yup.object({
     .positive("Invalid number of stocks!"),
   unit: yup.string().required("Unit is required!"),
   category: yup.string().required("Unit is required!"),
-  // file: yup
-  //   .mixed()
-  //   // .required("A file is required")
-  //   .test("fileSize", "File too large", (value) => {
-  //     console.log("FILE SIZE!!" + value);
-  //     if (value && value.size > FILE_SIZE) return false;
-  //     return true;
-  //     // return value && value.size <= FILE_SIZE;
-  //   })
-  //   .test("fileFormat", "Unsupported Format", (value) => {
-  //     // const b = value && SUPPORTED_FORMATS.includes(value.type);
-  //     console.log("FILE FORMAT!!" + value.type);
-  //     if (value && !SUPPORTED_FORMATS.includes(value.type)) return false;
-  //     return true;
-  //     // return value && SUPPORTED_FORMATS.includes(value.type);
-  //   }),
 });
 
 export default function EditProductForm({
@@ -110,7 +94,6 @@ export default function EditProductForm({
       stock: product ? product.stock : "",
       unit: product ? product.unit : "",
       category: product ? product.category : "",
-      // file: null,
     },
     validationSchema,
     onSubmit,
