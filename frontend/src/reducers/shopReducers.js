@@ -31,15 +31,9 @@ const shopReducer = (state = initialState, action) => {
       return { ...state, loading: true };
 
     case EDIT_PRODUCT_SUCCESS:
-      const updatedProduct = action.payload;
-      const updatedShopProducts = state.shopDetail.products.map((product) => {
-        if (product.id == updatedProduct.id) return updatedProduct;
-        return product;
-      });
       return {
         ...state,
         loading: false,
-        shopDetail: { ...state.shopDetail, products: updatedShopProducts },
         selectedProduct: null,
       };
 
@@ -53,13 +47,10 @@ const shopReducer = (state = initialState, action) => {
       return { ...state, loading: true };
 
     case ADD_PRODUCT_SUCCESS:
-      const addedProduct = action.payload;
-      const extendedShopProducts = [...state.shopDetail.products, addedProduct];
       return {
         ...state,
         loading: false,
         addProductDialogOpen: false,
-        shopDetail: { ...state.shopDetail, products: extendedShopProducts },
       };
 
     case ADD_PRODUCT_FAILURE:
