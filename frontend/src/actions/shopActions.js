@@ -1,5 +1,6 @@
 import axiosInstance from "../utils/networkUtils";
-import { readAsDataUrl } from "../utils/imageUtils";
+import { updateProductInShop, addProductInShop } from "../utils/shopUtils";
+import { updateShopDetail } from "./dashboardActions";
 
 // Edit product actions
 export const SHOW_EDIT_PRODUCT_DIALOG = "SHOW_EDIT_PRODUCT_DIALOG";
@@ -23,38 +24,39 @@ export const showEditProductDialog = (product) => ({
 
 export const editProductRequest = () => ({ type: EDIT_PRODUCT_REQUEST });
 
-export const editProductSuccess = (updatedProduct) => ({
-  type: EDIT_PRODUCT_SUCCESS,
-  payload: updatedProduct,
-});
+export const editProductSuccess = () => ({ type: EDIT_PRODUCT_SUCCESS });
 
 export const editProductFailure = (error) => ({
   type: EDIT_PRODUCT_FAILURE,
   payload: error,
 });
 
-export const editProduct = (product) => {
+export const editProduct = (shopDetail, product) => {
   return (dispatch) => {
     dispatch(editProductRequest());
+    const formData = new FormData();
+    for (let key in product) {
+      if (key !== "image") formData.append(key, product[key]);
+      else formData.append(key, product[key], product[key].name);
+    }
 
-    readAsDataUrl(product.image)
-      .then((response) => {
-        if (response) return { ...product, image: response };
-        delete product.image;
-        return product;
+    axiosInstance()
+      .patch(`/product/${product.id}/`, formData, {
+        "content-type": "multipart/form-data",
       })
-      .then((productData) => {
-        console.log(productData);
-        axiosInstance()
-          .patch(`/product/${product.id}`, productData)
-          .then((response) => {
-            const updatedProduct = response.data;
-            dispatch(editProductSuccess(updatedProduct));
-          })
-          .catch((error) => {
-            const errors = error.response.data;
-            dispatch(editProductFailure("Something is wrong!"));
-          });
+      .then((response) => {
+        const updatedProduct = response.data;
+        const updatedShopDetail = updateProductInShop(
+          shopDetail,
+          updatedProduct
+        );
+        dispatch(editProductSuccess());
+        dispatch(updateShopDetail(updatedShopDetail));
+      })
+      .catch((error) => {
+        // const errors = error.response.data;
+        console.log(error);
+        dispatch(editProductFailure("Something is wrong!"));
       });
   };
 };
@@ -66,9 +68,8 @@ export const showAddProductDialog = () => ({
 
 export const addProductRequest = () => ({ type: ADD_PRODUCT_REQUEST });
 
-export const addProductSuccess = (updatedProduct) => ({
+export const addProductSuccess = () => ({
   type: ADD_PRODUCT_SUCCESS,
-  payload: updatedProduct,
 });
 
 export const addProductFailure = (error) => ({
@@ -76,28 +77,30 @@ export const addProductFailure = (error) => ({
   payload: error,
 });
 
-export const addProduct = (product) => {
+export const addProduct = (shopDetail, product) => {
   return (dispatch) => {
     dispatch(addProductRequest());
 
-    readAsDataUrl(null)
-      .then((response) => {
-        return { ...product, image: response };
+    const formData = new FormData();
+    console.log(product);
+    for (let key in product) {
+      if (key !== "image") formData.append(key, product[key]);
+      else formData.append(key, product[key], product[key].name);
+    }
+
+    axiosInstance()
+      .post(`/shop/${shopDetail.id}/products/`, formData, {
+        "content-type": "multipart/form-data",
       })
-      .then((productData) => {
-        axiosInstance()
-          .post(`shop/${product.shopId}/productssss/`, productData)
-          .then((response) => {
-            const addedProduct = response.data;
-            dispatch(addProductSuccess(addedProduct));
-          })
-          .catch((error) => {
-            const errors = error.response.data;
-            dispatch(addProductFailure("Something is wrong!"));
-          });
+      .then((response) => {
+        const addedProduct = response.data;
+        const updatedShopDetail = addProductInShop(shopDetail, addedProduct);
+        dispatch(addProductSuccess());
+        dispatch(updateShopDetail(updatedShopDetail));
       })
       .catch((error) => {
-        console.log(error.message);
+        // const errors = error.response.data;
+        console.log(error);
         dispatch(addProductFailure("Something is wrong!"));
       });
   };
