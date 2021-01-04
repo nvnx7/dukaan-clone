@@ -32,7 +32,6 @@ const MAX_FILE_SIZE = 1 * 1024 * 1024;
 const SUPPORTED_TYPES = ["image/jpg", "image/jpeg", "image/gif", "image/png"];
 
 const validationSchema = yup.object({
-  id: yup.number().required(),
   title: yup.string().required("Required!").min(1),
   description: yup.string(),
   price: yup
@@ -103,8 +102,6 @@ export default function EditProductForm({
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <form className={classes.form} onSubmit={formik.handleSubmit}>
-        <input type="hidden" id="id" name="id" value={formik.values.id}></input>
-
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -226,9 +223,11 @@ export default function EditProductForm({
                   <em>None</em>
                 </MenuItem>
                 <MenuItem value="1">Grocery</MenuItem>
-                <MenuItem value="2">Fast Food</MenuItem>
-                <MenuItem value="3">Garments</MenuItem>
-                <MenuItem value="4">Stationary</MenuItem>
+                <MenuItem value="2">Electronics</MenuItem>
+                <MenuItem value="3">Fast Food</MenuItem>
+                <MenuItem value="4">Garments</MenuItem>
+                {/* <MenuItem value="4">Stationary</MenuItem> */}
+
                 {/* <MenuItem value="5">millilitre</MenuItem>
               <MenuItem value="6">dozen</MenuItem> */}
               </Select>
