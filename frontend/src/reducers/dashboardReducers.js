@@ -5,13 +5,15 @@ import {
   GET_SHOP_DETAIL_REQUEST,
   GET_SHOP_DETAIL_SUCCESS,
   GET_SHOP_DETAIL_FAILURE,
+  UPDATE_SHOP_DETAIL,
 } from "../actions/dashboardActions";
 
 const initialState = {
   tabValue: 0,
   selectedShop: 0,
   loading: false,
-  shops: [],
+  shopsList: [],
+  error: "",
 };
 
 const dashboardReducer = (state = initialState, action) => {
@@ -31,10 +33,23 @@ const dashboardReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        shops: [...state.shops, action.payload],
+        shopsList: [...state.shopsList, action.payload],
       };
     case GET_SHOP_DETAIL_FAILURE:
       return { ...state, loading: false, error: action.payload };
+
+    case UPDATE_SHOP_DETAIL:
+      const updatedShopDetail = action.payload;
+      const updatedShopsList = state.shopsList.map((shopDetail) => {
+        if (shopDetail.id == updatedShopDetail.id) return updatedShopDetail;
+        return shopDetail;
+      });
+      return {
+        ...state,
+        loading: false,
+        error: "",
+        shopsList: updatedShopsList,
+      };
 
     default:
       return state;

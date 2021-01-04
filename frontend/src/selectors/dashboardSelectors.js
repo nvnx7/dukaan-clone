@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 
 const tabSelector = (state) => state.dashboard.tabValue;
 const selectedShopSelector = (state) => state.dashboard.selectedShop;
-const shopsListSelector = (state) => state.dashboard.shops;
+const shopsListSelector = (state) => state.dashboard.shopsList;
 
 export const tabValue = createSelector([tabSelector], (tabValue) => tabValue);
 export const selectedShop = createSelector(
