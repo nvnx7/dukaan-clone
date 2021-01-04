@@ -13,6 +13,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import EditableProductList from "../components/EditableProductList";
 import EditProductForm from "../components/EditProductForm";
+import OrdersList from "../components/OrdersList";
 
 import {
   selectedProduct,
@@ -33,14 +34,19 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    padding: "8px",
   },
   title: {
     fontWeight: "bold",
     padding: "16px 0px",
   },
+  listContainer: {
+    position: "relative",
+  },
   fab: {
-    float: "right",
-    margin: "4px",
+    position: "absolute",
+    bottom: "4px",
+    right: "24px",
   },
 }));
 
@@ -69,13 +75,11 @@ function ShopView({
   };
 
   const handleAddProduct = (product) => {
-    if (!product.image) delete product.image;
-    addProduct(product);
+    addProduct(shopDetail, product);
   };
 
   const handleEditProduct = (product) => {
-    console.log(product);
-    editProduct(product);
+    editProduct(shopDetail, product);
   };
 
   const paths = ["/", "/orders", "/shop"];
@@ -86,7 +90,10 @@ function ShopView({
       <Switch>
         <Route path={`${routeMatch.path}/orders`}>
           <Grid item fullWidth>
-            Orders
+            <OrdersList
+              orders={shopDetail["orders"] ? shopDetail["orders"] : []}
+              onOrderAction={(order) => {}}
+            />
           </Grid>
         </Route>
 
@@ -97,7 +104,7 @@ function ShopView({
         </Route>
 
         <Route path={`${routeMatch.path}/`}>
-          <Grid item fullWidth xs={12}>
+          <Grid className={classes.listContainer} item fullWidth xs={12}>
             <EditableProductList
               fullWidth
               productsData={
@@ -169,8 +176,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(showEditProductDialog(product)),
     showAddProductDialog: () => dispatch(showAddProductDialog()),
     hideProductFormDialog: () => dispatch(hideProductFormDialog()),
-    editProduct: (product) => dispatch(editProduct(product)),
-    addProduct: (product) => dispatch(addProduct(product)),
+    editProduct: (shopDetail, product) =>
+      dispatch(editProduct(shopDetail, product)),
+    addProduct: (shopDetail, product) =>
+      dispatch(addProduct(shopDetail, product)),
   };
 };
 
