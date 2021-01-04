@@ -2,14 +2,15 @@ from rest_framework import serializers
 from ..models.product import Product, ProductCategory
 
 
-class ProductSerializer(serializers.HyperlinkedModelSerializer):
-    category = serializers.StringRelatedField()
-    shop = serializers.HyperlinkedRelatedField(
-        read_only=True, view_name='shop-detail')
+class ProductSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+    category = serializers.PrimaryKeyRelatedField(read_only=True)
+    shop = serializers.PrimaryKeyRelatedField(
+        read_only=True)
 
     class Meta:
         model = Product
-        fields = ['title', 'description', 'price',
+        fields = ['id', 'title', 'description', 'price',
                   'unit', 'stock', 'image', 'category', 'shop']
 
 
