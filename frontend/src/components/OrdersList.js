@@ -135,7 +135,11 @@ function OrderRow({ order, onOrderAction }) {
         <TableCell align="right">{order.quantity}</TableCell>
         <TableCell align="right">{status[order.status]}</TableCell>
         <TableCell align="right">
-          <Button variant="outlined" onClick={handleActionBtnClick}>
+          <Button
+            variant="outlined"
+            onClick={handleActionBtnClick}
+            disabled={order.status === 4}
+          >
             SHIP
           </Button>
         </TableCell>
