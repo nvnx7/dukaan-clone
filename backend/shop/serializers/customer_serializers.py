@@ -27,13 +27,14 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
     customer = CustomerSerializer(read_only=True)
     product = ProductSerializer(read_only=True)
     shop = PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Order
-        fields = ['quantity', 'date_ordered', 'status',
+        fields = ['id', 'quantity', 'date_ordered', 'status',
                   'delivery_address', 'customer', 'product', 'shop']
 
         read_only_fields = ['date_ordered',
