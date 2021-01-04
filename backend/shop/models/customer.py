@@ -3,13 +3,13 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
 from .product import Product
+from .shop import Shop
 
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     phone = models.IntegerField(null=False)
-    # address = models.CharField(max_length=500, null=False)
 
 
 class Order(models.Model):
@@ -23,8 +23,15 @@ class Order(models.Model):
                                    MinValueValidator(1), MaxValueValidator(9999999999)])
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='product_orders')
+
+    shop = models.ForeignKey(
+        Shop, on_delete=models.CASCADE, related_name='shop_orders')
+
     delivery_address = models.CharField(max_length=500, null=False)
+
     customer = models.ForeignKey(
         Customer, on_delete=models.CASCADE, related_name='customer_orders')
+
     date_ordered = models.DateTimeField(default=timezone.now)
+
     status = models.IntegerField(choices=ORDER_STATUS, default=1)

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.relations import PrimaryKeyRelatedField
 
 from ..models.customer import Customer, Order
 from .product_serializers import ProductSerializer
@@ -28,11 +29,12 @@ class CustomerSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     customer = CustomerSerializer(read_only=True)
     product = ProductSerializer(read_only=True)
+    shop = PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Order
         fields = ['quantity', 'date_ordered', 'status',
-                  'delivery_address', 'customer', 'product']
+                  'delivery_address', 'customer', 'product', 'shop']
 
         read_only_fields = ['date_ordered',
                             'delivery_address', 'quantity']
