@@ -1,7 +1,8 @@
 import {
   DASHBOARD_TAB_CHANGE,
   DASHBOARD_SELECT_SHOP,
-  DASHBOARD_ERROR_HIDE,
+  DASHBOARD_ERROR_INFO_HIDE,
+  DASHBOARD_SET_ERROR_OR_INFO,
   GET_SHOP_DETAIL_REQUEST,
   GET_SHOP_DETAIL_SUCCESS,
   GET_SHOP_DETAIL_FAILURE,
@@ -14,6 +15,7 @@ const initialState = {
   loading: false,
   shopsList: [],
   error: "",
+  info: "",
 };
 
 const dashboardReducer = (state = initialState, action) => {
@@ -21,11 +23,20 @@ const dashboardReducer = (state = initialState, action) => {
     case DASHBOARD_TAB_CHANGE:
       return { ...state, tabValue: action.payload };
 
-    case DASHBOARD_ERROR_HIDE:
-      return { ...state, error: "" };
+    case DASHBOARD_ERROR_INFO_HIDE:
+      return { ...state, error: "", info: "" };
 
     case DASHBOARD_SELECT_SHOP:
       return { ...state, selectedShop: action.payload };
+
+    case DASHBOARD_SET_ERROR_OR_INFO:
+      const errorOrInfo = action.payload;
+      return {
+        ...state,
+        error: errorOrInfo.error || "",
+        info: errorOrInfo.info || "",
+        loading: false,
+      };
 
     case GET_SHOP_DETAIL_REQUEST:
       return { ...state, loading: true };
@@ -48,6 +59,7 @@ const dashboardReducer = (state = initialState, action) => {
         ...state,
         loading: false,
         error: "",
+        info: "Operation Successful!",
         shopsList: updatedShopsList,
       };
 

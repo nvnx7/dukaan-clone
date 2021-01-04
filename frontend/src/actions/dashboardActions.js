@@ -3,7 +3,8 @@ import axiosInstance from "../utils/networkUtils";
 // Dashboard actions
 export const DASHBOARD_TAB_CHANGE = "DASHBOARD_TAB_CHANGE";
 export const DASHBOARD_SELECT_SHOP = "DASHBOARD_SELECT_SHOP";
-export const DASHBOARD_ERROR_HIDE = "DASHBOARD_ERROR_HIDE";
+export const DASHBOARD_ERROR_INFO_HIDE = "DASHBOARD_ERROR_INFO_HIDE";
+export const DASHBOARD_SET_ERROR_OR_INFO = "DASHBOARD_SET_ERROR_OR_INFO";
 
 // Get shop details actions
 export const GET_SHOP_DETAIL_REQUEST = "GET_SHOP_DETAIL_REQUEST";
@@ -58,4 +59,9 @@ export const updateShopDetail = (updatedShopDetail) => ({
   payload: updatedShopDetail,
 });
 
-export const hideError = () => ({ type: DASHBOARD_ERROR_HIDE });
+export const setErrorOrInfo = (errorOrInfo) => ({
+  type: DASHBOARD_SET_ERROR_OR_INFO,
+  payload: errorOrInfo,
+});
+
+export const hideErrorInfo = () => ({ type: DASHBOARD_ERROR_INFO_HIDE });

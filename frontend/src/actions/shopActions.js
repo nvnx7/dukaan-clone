@@ -1,6 +1,6 @@
 import axiosInstance from "../utils/networkUtils";
 import { updateProductInShop, addProductInShop } from "../utils/shopUtils";
-import { updateShopDetail } from "./dashboardActions";
+import { updateShopDetail, setErrorOrInfo } from "./dashboardActions";
 
 // Edit product actions
 export const SHOW_EDIT_PRODUCT_DIALOG = "SHOW_EDIT_PRODUCT_DIALOG";
@@ -26,9 +26,8 @@ export const editProductRequest = () => ({ type: EDIT_PRODUCT_REQUEST });
 
 export const editProductSuccess = () => ({ type: EDIT_PRODUCT_SUCCESS });
 
-export const editProductFailure = (error) => ({
+export const editProductFailure = () => ({
   type: EDIT_PRODUCT_FAILURE,
-  payload: error,
 });
 
 export const editProduct = (shopDetail, product) => {
@@ -56,7 +55,8 @@ export const editProduct = (shopDetail, product) => {
       .catch((error) => {
         // const errors = error.response.data;
         console.log(error);
-        dispatch(editProductFailure("Something is wrong!"));
+        dispatch(editProductFailure());
+        dispatch(setErrorOrInfo({ error: "Something is wrong!" }));
       });
   };
 };
@@ -72,9 +72,8 @@ export const addProductSuccess = () => ({
   type: ADD_PRODUCT_SUCCESS,
 });
 
-export const addProductFailure = (error) => ({
+export const addProductFailure = () => ({
   type: ADD_PRODUCT_FAILURE,
-  payload: error,
 });
 
 export const addProduct = (shopDetail, product) => {
@@ -101,7 +100,8 @@ export const addProduct = (shopDetail, product) => {
       .catch((error) => {
         // const errors = error.response.data;
         console.log(error);
-        dispatch(addProductFailure("Something is wrong!"));
+        dispatch(addProductFailure());
+        dispatch(setErrorOrInfo({ error: "Something is wrong!" }));
       });
   };
 };

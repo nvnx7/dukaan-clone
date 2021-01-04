@@ -8,18 +8,26 @@ import {
   Tabs,
   Tab,
   Divider,
+  Snackbar,
 } from "@material-ui/core";
 import { Redirect, useRouteMatch } from "react-router-dom";
 
+import Alert from "../components/Alert";
 import ShopView from "./ShopView";
 import { userInfo } from "../selectors/authSelectors";
 import {
   tabValue,
   selectedShop,
   shopsList,
+  errorMessage,
+  infoMessage,
 } from "../selectors/dashboardSelectors";
 
-import { changeTab, getShopDetail } from "../actions/dashboardActions";
+import {
+  changeTab,
+  getShopDetail,
+  hideErrorInfo,
+} from "../actions/dashboardActions";
 
 // import bgImage from "../images/dukan.jpg";
 // const fakeProductsData = [];
@@ -74,8 +82,11 @@ function Dashboard({
   selectedShop,
   tabValue,
   shopsList,
+  error,
+  info,
   getShopDetail,
   changeTab,
+  hideErrorInfo,
 }) {
   const classes = useStyles();
   const match = useRouteMatch();
@@ -105,7 +116,7 @@ function Dashboard({
           className={classes.title}
           align="center"
         >
-          SHOP TITLE
+          {shopsList[selectedShop] ? shopsList[selectedShop].title : "TITLE"}
         </Typography>
       </Grid>
 
@@ -149,6 +160,26 @@ function Dashboard({
           </Grid>
         </Hidden>
       </Grid>
+
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={3000}
+        onClose={hideErrorInfo}
+      >
+        <Alert severity="error" onClose={hideErrorInfo}>
+          {error}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={Boolean(info)}
+        autoHideDuration={3000}
+        onClose={hideErrorInfo}
+      >
+        <Alert severity="success" onClose={hideErrorInfo}>
+          {info}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 }
@@ -159,6 +190,8 @@ const mapStateToProps = (state) => {
     tabValue: tabValue(state),
     selectedShop: selectedShop(state),
     shopsList: shopsList(state),
+    error: errorMessage(state),
+    info: infoMessage(state),
   };
 };
 
@@ -166,6 +199,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     changeTab: (tabValue) => dispatch(changeTab(tabValue)),
     getShopDetail: (shopUrl) => dispatch(getShopDetail(shopUrl)),
+    hideErrorInfo: () => dispatch(hideErrorInfo()),
   };
 };
 
