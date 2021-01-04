@@ -1,3 +1,4 @@
+from .models.product import Product
 from .models.shop import Shop
 from .models.customer import Order
 from rest_framework import permissions
@@ -61,7 +62,12 @@ class IsProductSellerOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        else:
+        elif request.method in ('PATCH', 'DELETE'):
+            if 'pk' in view.kwargs and view.kwargs['pk']:
+                pk = view.kwargs['pk']
+                product = Product.objects.get(pk=pk)
+                return product.shop.owner == request.user
+        elif request.method == 'POST':
             if 'pk' in view.kwargs and view.kwargs['pk']:
                 pk = view.kwargs['pk']
                 shop = Shop.objects.get(pk=pk)
