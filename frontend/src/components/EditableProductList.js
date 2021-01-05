@@ -23,11 +23,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EditableProductList({ productsData, onItemClick }) {
   const classes = useStyles();
+  const outOfStockProductCount = productsData.reduce((total, product) => {
+    if (product.stock === 0) return total + 1;
+    return total;
+  }, 0);
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography>{`${productsData.length} PRODUCTS`}</Typography>
+          <Typography>{`${productsData.length} Products / ${outOfStockProductCount} Out Of Stock`}</Typography>
         </Grid>
         {productsData.map((product) => (
           <EditableProductListTile
