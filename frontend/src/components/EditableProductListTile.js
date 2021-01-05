@@ -39,7 +39,7 @@ export default function EditableProductListTile({
 }) {
   const classes = useStyles();
   return (
-    <Grid item xs={12} sm={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card>
         <CardActionArea>
           <CardMedia className={classes.media} image={imageSrc} />
