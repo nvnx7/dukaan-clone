@@ -1,6 +1,6 @@
 export function updateProductInShop(shopDetail, updatedProduct) {
   const updatedProductList = shopDetail["shop_products"].map((product) => {
-    if (product.id == updatedProduct.id) return updatedProduct;
+    if (product.id === updatedProduct.id) return updatedProduct;
     return product;
   });
   const updatedShopDetails = Object.assign({}, shopDetail);
@@ -15,8 +15,19 @@ export function addProductInShop(shopDetail, addedProduct) {
   return updatedShopDetails;
 }
 
+export function updateOrderInShop(shopDetail, updatedOrder) {
+  const updatedOrderList = shopDetail["orders"].map((order) => {
+    if (order.id === updatedOrder.id) return updatedOrder;
+    return order;
+  });
+  const updatedShopDetails = Object.assign({}, shopDetail);
+  updatedShopDetails["orders"] = updatedOrderList;
+
+  return updatedShopDetails;
+}
+
 export function getActiveOrdersCount(shopDetail) {
-  if (!shopDetail.orders) return 0;
+  if (!shopDetail || !shopDetail.orders) return 0;
   return shopDetail.orders.reduce((total, order) => {
     if (order.status !== 4) return total + 1;
     return total;
@@ -24,7 +35,7 @@ export function getActiveOrdersCount(shopDetail) {
 }
 
 export function getPendingOrdersCount(shopDetail) {
-  if (!shopDetail.orders) return 0;
+  if (!shopDetail || !shopDetail.orders) return 0;
   return shopDetail.orders.reduce((total, order) => {
     if (order.status === 1) return total + 1;
     return total;
@@ -32,15 +43,29 @@ export function getPendingOrdersCount(shopDetail) {
 }
 
 export function getProductsCount(shopDetail) {
-  if (!shopDetail["shop_products"]) return 0;
-  console.log(`shopDetail["shop_products"].length`);
+  if (!shopDetail || !shopDetail["shop_products"]) return 0;
   return shopDetail["shop_products"].length;
 }
 
 export function getOutOfStockProductsCount(shopDetail) {
-  if (!shopDetail["shop_products"]) return 0;
+  if (!shopDetail || !shopDetail["shop_products"]) return 0;
   return shopDetail["shop_products"].reduce((total, product) => {
     if (product.stock === 0) return total + 1;
     else return total;
+  }, 0);
+}
+
+export function getShopRevenue(shopDetail) {
+  if (!shopDetail || !shopDetail.revenue) return 0;
+  return shopDetail.revenue;
+}
+
+export function getPendingRevenue(shopDetail) {
+  if (!shopDetail || !shopDetail.revenue || !shopDetail.orders) return 0;
+  return shopDetail.orders.reduce((total, order) => {
+    if (order.status === 2 || order.status === 3) {
+      return total + order.product.price * order.quantity;
+    }
+    return total;
   }, 0);
 }
