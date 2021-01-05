@@ -5,13 +5,14 @@ export const DASHBOARD_TAB_CHANGE = "DASHBOARD_TAB_CHANGE";
 export const DASHBOARD_SELECT_SHOP = "DASHBOARD_SELECT_SHOP";
 export const DASHBOARD_ERROR_INFO_HIDE = "DASHBOARD_ERROR_INFO_HIDE";
 export const DASHBOARD_SET_ERROR_OR_INFO = "DASHBOARD_SET_ERROR_OR_INFO";
+export const DASHBOARD_TOGGLE_DRAWER = "DASHBOARD_TOGGLE_DRAWER";
 
 // Get shop details actions
 export const GET_SHOP_DETAIL_REQUEST = "GET_SHOP_DETAIL_REQUEST";
 export const GET_SHOP_DETAIL_SUCCESS = "GET_SHOP_DETAIL_SUCCESS";
 export const GET_SHOP_DETAIL_FAILURE = "GET_SHOP_DETAIL_FAILURE";
 
-// Update shop detail acion
+// Update shop detail aciton
 export const UPDATE_SHOP_DETAIL = "UPDATE_SHOP_DETAIL";
 
 // Dashboard actions creators
@@ -22,6 +23,8 @@ export const changeTab = (tabValue) => {
 export const selectShop = (shopId) => {
   return { type: DASHBOARD_SELECT_SHOP, payload: shopId };
 };
+
+export const toggleDrawer = () => ({ type: DASHBOARD_TOGGLE_DRAWER });
 
 // Get shop details action creators
 export const getShopDetailRequest = () => ({

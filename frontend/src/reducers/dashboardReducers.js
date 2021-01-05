@@ -3,6 +3,7 @@ import {
   DASHBOARD_SELECT_SHOP,
   DASHBOARD_ERROR_INFO_HIDE,
   DASHBOARD_SET_ERROR_OR_INFO,
+  DASHBOARD_TOGGLE_DRAWER,
   GET_SHOP_DETAIL_REQUEST,
   GET_SHOP_DETAIL_SUCCESS,
   GET_SHOP_DETAIL_FAILURE,
@@ -16,6 +17,7 @@ const initialState = {
   shopsList: [],
   error: "",
   info: "",
+  drawerOpen: false,
 };
 
 const dashboardReducer = (state = initialState, action) => {
@@ -37,6 +39,9 @@ const dashboardReducer = (state = initialState, action) => {
         info: errorOrInfo.info || "",
         loading: false,
       };
+
+    case DASHBOARD_TOGGLE_DRAWER:
+      return { ...state, drawerOpen: !state.drawerOpen };
 
     case GET_SHOP_DETAIL_REQUEST:
       return { ...state, loading: true };
