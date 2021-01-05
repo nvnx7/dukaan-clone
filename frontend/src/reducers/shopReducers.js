@@ -15,7 +15,6 @@ const initialState = {
   loading: false,
   addProductDialogOpen: false,
   selectedProduct: null,
-  error: "",
 };
 
 const shopReducer = (state = initialState, action) => {
@@ -38,7 +37,7 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case EDIT_PRODUCT_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false };
 
     case SHOW_ADD_PRODUCT_DIALOG:
       return { ...state, selectedProduct: null, addProductDialogOpen: true };
@@ -54,7 +53,7 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case ADD_PRODUCT_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false };
 
     case HIDE_PRODUCT_FORM_DIALOG:
       return { ...state, selectedProduct: null, addProductDialogOpen: false };
