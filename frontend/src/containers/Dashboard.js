@@ -120,6 +120,8 @@ function Dashboard({
       getShopDetail(user["owner_shops"][selectedShop]);
   }, []);
 
+  if (!user.authenticated) return <Redirect to="/" />;
+
   const handleTabChange = (e, newValue) => {
     changeTab(newValue);
     toggleDrawer();
@@ -135,8 +137,6 @@ function Dashboard({
   const outOfStockProductsCount = getOutOfStockProductsCount(
     shopsList[selectedShop]
   );
-
-  if (!user.authenticated) return <Redirect to="/" />;
 
   return (
     <Grid
