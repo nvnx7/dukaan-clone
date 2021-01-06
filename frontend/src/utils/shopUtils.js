@@ -19,9 +19,9 @@ export function deleteProductInShop(shopDetail, deletedProduct) {
   const updatedProductList = shopDetail["shop_products"].filter((product) => {
     return product.id !== deletedProduct.id;
   });
-  const updatedShopDetails = Object.assign({}, shopDetail);
-  updatedShopDetails["shop_products"] = updatedProductList;
-  return updatedShopDetails;
+  const updatedShopDetail = Object.assign({}, shopDetail);
+  updatedShopDetail["shop_products"] = updatedProductList;
+  return updatedShopDetail;
 }
 
 export function updateOrderInShop(shopDetail, updatedOrder) {
@@ -29,10 +29,27 @@ export function updateOrderInShop(shopDetail, updatedOrder) {
     if (order.id === updatedOrder.id) return updatedOrder;
     return order;
   });
-  const updatedShopDetails = Object.assign({}, shopDetail);
-  updatedShopDetails["orders"] = updatedOrderList;
+  const updatedShopDetail = Object.assign({}, shopDetail);
+  updatedShopDetail["orders"] = updatedOrderList;
 
-  return updatedShopDetails;
+  if (updatedOrder.status === 4) {
+    updatedShopDetail.revenue =
+      Number(updatedShopDetail.revenue) +
+      Number(updatedOrder.product.price * updatedOrder.quantity);
+  }
+
+  return updatedShopDetail;
+}
+
+export function sortOrdersByStatusAndDate(orders) {
+  orders.sort((o1, o2) => {
+    return (
+      o1.status - o2.status ||
+      new Date(o2["date_ordered"]) - new Date(o1[["date_ordered"]])
+    );
+  });
+
+  return orders;
 }
 
 export function getActiveOrdersCount(shopDetail) {
