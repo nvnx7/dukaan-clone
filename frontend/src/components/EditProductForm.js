@@ -53,6 +53,7 @@ export default function EditProductForm({
   loading,
   onSave,
   onCancel,
+  onDelete,
 }) {
   const classes = useStyles();
 
@@ -256,6 +257,18 @@ export default function EditProductForm({
               disabled={loading}
             >
               Cancel
+            </Button>
+          </Grid>
+
+          <Grid item xs={4}>
+            <Button
+              fullWidth
+              color="secondary"
+              className={classes.actionBtn}
+              onClick={() => onDelete(product)}
+              disabled={loading}
+            >
+              Delete
             </Button>
           </Grid>
         </Grid>
