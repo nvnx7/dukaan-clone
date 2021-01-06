@@ -1,19 +1,17 @@
+from datetime import date
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets
+from rest_framework import mixins
+from rest_framework import status, viewsets, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
-# from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-# from rest_framework.authentication import TokenAuthentication
 
 from ..models.customer import Customer, Order
 from ..models.product import Product
 from ..models.shop import Shop
 from ..serializers.customer_serializers import CustomerSerializer, OrderSerializer
+from ..serializers.shop_serializers import ShopSerializer
+from ..serializers.product_serializers import ProductSerializer
 from ..permissions import IsOrderReceiverOrCreateOnly
-# from backend.shop.models import customer
-
-# from backend.shop.models import product
 
 
 # class CustomerViewSet(viewsets.ModelViewSet):
@@ -42,22 +40,46 @@ class OrderViewSet(viewsets.ModelViewSet):
         order_id = kwargs['order_id']
         order = get_object_or_404(self.queryset, pk=order_id)
 
-        serializer = self.serializer_class(
+        order_serializer = self.serializer_class(
             instance=order, context={'request': request})
 
         # copy data to a dict & update status
-        updatedData = dict(serializer.data)
-        updatedData['status'] = request.data.get('status')
-        serializer = self.serializer_class(data=updatedData)
+        updated_order_data = dict(order_serializer.data)
+        updated_order_data['status'] = request.data.get('status')
+        order_serializer = self.serializer_class(data=updated_order_data)
 
-        if serializer.is_valid():
+        if order_serializer.is_valid():
             # Make sure order status increments in valid order
             if order.status >= int(request.data.get('status')):
-                raise PermissionDenied()
-            serializer.update(order, serializer.validated_data)
-            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
+                raise serializers.ValidationError("Invalid status posted!")
+
+            if updated_order_data['status'] == 4:
+                # Update revenue if order delivered
+                updated_revenue = order.shop.revenue + \
+                    (order.quantity * order.product.price)
+                shop_serializer = ShopSerializer(
+                    instance=order.shop, data={'revenue': updated_revenue},  partial=True, context={'request': request})
+
+                if shop_serializer.is_valid():
+                    shop_serializer.update(
+                        instance=order.shop, validated_data=shop_serializer.validated_data)
+                else:
+                    return Response(shop_serializer.errors,  status=status.HTTP_400_BAD_REQUEST)
+
+                # Update product stock available when order delivered
+                updated_stock = order.product.stock - order.quantity
+                product_serializer = ProductSerializer(instance=order.product, data={
+                                                       'stock': updated_stock},  partial=True, context={'request': request})
+
+                if product_serializer.is_valid():
+                    product_serializer.save()
+                else:
+                    return Response(product_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            order_serializer.update(order, order_serializer.validated_data)
+            return Response(updated_order_data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['POST'])
     def create_multiple(self, request, *args, **kwargs):
@@ -72,13 +94,15 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         # Create each order for given product for the customer
         for order in request.data.get('orders'):
-            product = Product.objects.get(pk=order['product'])
-            serializer = self.serializer_class(data=order)
+            order_serializer = OrderSerializer(data=order)
+            if order_serializer.is_valid():
+                product = get_object_or_404(Product, pk=order['product'])
+                shop = get_object_or_404(Shop, pk=kwargs['shop_id'])
 
-            if serializer.is_valid():
-                serializer.save(customer=customer, product=product)
-                response['orders'].append(serializer.validated_data)
+                order_serializer.save(
+                    customer=customer, product=product, shop=shop)
+                response['orders'].append(order_serializer.validated_data)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(order_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(response, status=status.HTTP_201_CREATED)

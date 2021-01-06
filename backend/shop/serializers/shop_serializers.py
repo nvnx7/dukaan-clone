@@ -15,7 +15,7 @@ class ShopSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'title', 'address', 'date_created',
                   'revenue', 'owner', 'shop_products']
 
-        read_only_fields = ['revenue', 'date_created']
+        read_only_fields = ['date_created']
 
 
 class ShopOwnerSerializer(serializers.HyperlinkedModelSerializer):
