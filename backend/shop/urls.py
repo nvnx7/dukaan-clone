@@ -72,7 +72,7 @@ urlpatterns = [
     path('shop/<int:shop_id>/orders/<int:order_id>/',
          order_detail, name='order-detail'),
 
-    path('product/<int:pk>/', product_detail, name='product-detail'),
+    path('products/<int:pk>/', product_detail, name='product-detail'),
 
     # path('customer/<int:pk>/', customer_detail, name='customer-detail'),
     # path('customers/', customer_list, name='customer-list'),
