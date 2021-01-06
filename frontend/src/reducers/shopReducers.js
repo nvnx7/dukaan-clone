@@ -7,6 +7,9 @@ import {
   ADD_PRODUCT_REQUEST,
   ADD_PRODUCT_SUCCESS,
   ADD_PRODUCT_FAILURE,
+  DELETE_PRODUCT_REQUEST,
+  DELETE_PRODUCT_SUCCESS,
+  DELETE_PRODUCT_FAILURE,
   HIDE_PRODUCT_FORM_DIALOG,
 } from "../actions/shopActions";
 
@@ -53,6 +56,20 @@ const shopReducer = (state = initialState, action) => {
       };
 
     case ADD_PRODUCT_FAILURE:
+      return { ...state, loading: false };
+
+    case DELETE_PRODUCT_REQUEST:
+      return { ...state, loading: true };
+
+    case DELETE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        selectedProduct: null,
+        addProductDialogOpen: false,
+        loading: false,
+      };
+
+    case DELETE_PRODUCT_FAILURE:
       return { ...state, loading: false };
 
     case HIDE_PRODUCT_FORM_DIALOG:

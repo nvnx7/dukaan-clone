@@ -1,5 +1,9 @@
 import axiosInstance from "../utils/networkUtils";
-import { updateProductInShop, addProductInShop } from "../utils/shopUtils";
+import {
+  updateProductInShop,
+  addProductInShop,
+  deleteProductInShop,
+} from "../utils/shopUtils";
 import { updateShopDetail, setErrorOrInfo } from "./dashboardActions";
 
 // Edit product actions
@@ -14,6 +18,11 @@ export const ADD_PRODUCT_REQUEST = "ADD_PRODUCT_REQUEST";
 export const ADD_PRODUCT_SUCCESS = "ADD_PRODUCT_SUCCESS";
 export const ADD_PRODUCT_FAILURE = "ADD_PRODUCT_FAILURE";
 
+// Delete product actions
+export const DELETE_PRODUCT_REQUEST = "DELETE_PRODUCT_REQUEST";
+export const DELETE_PRODUCT_SUCCESS = "DELETE_PRODUCT_SUCCESS";
+export const DELETE_PRODUCT_FAILURE = "DELETE_PRODUCT_FAILURE";
+
 export const HIDE_PRODUCT_FORM_DIALOG = "HIDE_PRODUCT_FORM_DIALOG";
 
 // Edit product actions
@@ -21,15 +30,9 @@ export const showEditProductDialog = (product) => ({
   type: SHOW_EDIT_PRODUCT_DIALOG,
   payload: product,
 });
-
 export const editProductRequest = () => ({ type: EDIT_PRODUCT_REQUEST });
-
 export const editProductSuccess = () => ({ type: EDIT_PRODUCT_SUCCESS });
-
-export const editProductFailure = () => ({
-  type: EDIT_PRODUCT_FAILURE,
-});
-
+export const editProductFailure = () => ({ type: EDIT_PRODUCT_FAILURE });
 export const editProduct = (shopDetail, product) => {
   return (dispatch) => {
     dispatch(editProductRequest());
@@ -40,7 +43,7 @@ export const editProduct = (shopDetail, product) => {
     }
 
     axiosInstance()
-      .patch(`/product/${product.id}/`, formData, {
+      .patch(`/products/${product.id}/`, formData, {
         "content-type": "multipart/form-data",
       })
       .then((response) => {
@@ -62,20 +65,10 @@ export const editProduct = (shopDetail, product) => {
 };
 
 // Add product actions
-export const showAddProductDialog = () => ({
-  type: SHOW_ADD_PRODUCT_DIALOG,
-});
-
+export const showAddProductDialog = () => ({ type: SHOW_ADD_PRODUCT_DIALOG });
 export const addProductRequest = () => ({ type: ADD_PRODUCT_REQUEST });
-
-export const addProductSuccess = () => ({
-  type: ADD_PRODUCT_SUCCESS,
-});
-
-export const addProductFailure = () => ({
-  type: ADD_PRODUCT_FAILURE,
-});
-
+export const addProductSuccess = () => ({ type: ADD_PRODUCT_SUCCESS });
+export const addProductFailure = () => ({ type: ADD_PRODUCT_FAILURE });
 export const addProduct = (shopDetail, product) => {
   return (dispatch) => {
     dispatch(addProductRequest());
@@ -101,6 +94,30 @@ export const addProduct = (shopDetail, product) => {
         // const errors = error.response.data;
         console.log(error);
         dispatch(addProductFailure());
+        dispatch(setErrorOrInfo({ error: "Something is wrong!" }));
+      });
+  };
+};
+
+// Delete product actions creators
+export const deleteProductSuccess = () => ({ type: DELETE_PRODUCT_SUCCESS });
+export const deleteProductFailure = () => ({ type: DELETE_PRODUCT_FAILURE });
+export const deleteProductRequest = () => ({ type: DELETE_PRODUCT_REQUEST });
+export const deleteProduct = (shopDetail, product) => {
+  return (dispatch) => {
+    dispatch(deleteProductRequest());
+
+    axiosInstance()
+      .delete(`/products/${product.id}`)
+      .then((response) => {
+        const updatedShopDetail = deleteProductInShop(shopDetail, product);
+        dispatch(deleteProductSuccess());
+        dispatch(updateShopDetail(updatedShopDetail));
+      })
+      .catch((error) => {
+        // const errors = error.response.data;
+        console.log(error);
+        dispatch(deleteProductFailure());
         dispatch(setErrorOrInfo({ error: "Something is wrong!" }));
       });
   };

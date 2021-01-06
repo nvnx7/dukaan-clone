@@ -15,6 +15,15 @@ export function addProductInShop(shopDetail, addedProduct) {
   return updatedShopDetails;
 }
 
+export function deleteProductInShop(shopDetail, deletedProduct) {
+  const updatedProductList = shopDetail["shop_products"].filter((product) => {
+    return product.id !== deletedProduct.id;
+  });
+  const updatedShopDetails = Object.assign({}, shopDetail);
+  updatedShopDetails["shop_products"] = updatedProductList;
+  return updatedShopDetails;
+}
+
 export function updateOrderInShop(shopDetail, updatedOrder) {
   const updatedOrderList = shopDetail["orders"].map((order) => {
     if (order.id === updatedOrder.id) return updatedOrder;
