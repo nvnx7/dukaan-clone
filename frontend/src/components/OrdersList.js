@@ -18,6 +18,8 @@ import {
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 
+import { sortOrdersByStatusAndDate } from "../utils/shopUtils";
+
 const useRowStyles = makeStyles({
   root: {
     "& > *": {
@@ -31,10 +33,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    overflow: "hidden",
+    // overflowY: "scroll",
   },
   tableContainer: {
-    overflowY: "scroll",
+    // overflowY: "scroll",
   },
   table: {
     minWidth: 650,
@@ -49,13 +51,15 @@ const useStyles = makeStyles((theme) => ({
 
 const status = ["NONE", "PENDING", "ACCEPTED", "SHIPPED", "DELIVERED"];
 
-export default function OrdersList({ orders, onOrderAction }) {
+export default function OrdersList({ orders, loading, onOrderAction }) {
   const classes = useStyles();
 
   const pendingOrdersCount = orders.reduce((total, order) => {
     if (order.status === 1) return total + 1;
     else return total;
   }, 0);
+
+  sortOrdersByStatusAndDate(orders);
 
   return (
     <div className={classes.root}>
@@ -95,6 +99,7 @@ export default function OrdersList({ orders, onOrderAction }) {
                 <OrderRow
                   key={order.id}
                   order={order}
+                  loading={loading}
                   onOrderAction={onOrderAction}
                 />
               ))}
@@ -106,11 +111,18 @@ export default function OrdersList({ orders, onOrderAction }) {
   );
 }
 
-function OrderRow({ order, onOrderAction }) {
+function OrderRow({ order, loading, onOrderAction }) {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+  const buttonLabels = ["NONE", "ACCEPT", "SHIP", "DELIVER", "DELIVERED"];
   const handleActionBtnClick = () => {
-    onOrderAction(order);
+    if (order.status === 4) {
+      console.log("Error! Order already set to delivered!");
+      return;
+    }
+    const updateOrder = Object.assign({}, order);
+    updateOrder.status = updateOrder.status + 1;
+    onOrderAction(updateOrder);
   };
 
   return (
@@ -138,9 +150,9 @@ function OrderRow({ order, onOrderAction }) {
           <Button
             variant="outlined"
             onClick={handleActionBtnClick}
-            disabled={order.status === 4}
+            disabled={order.status === 4 || loading}
           >
-            SHIP
+            {buttonLabels[order.status]}
           </Button>
         </TableCell>
       </TableRow>
