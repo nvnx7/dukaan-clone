@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ShopView({
+function OwnerShopView({
   // Props from parent
   routeMatch,
   tabValue,
@@ -300,4 +300,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShopView);
+export default connect(mapStateToProps, mapDispatchToProps)(OwnerShopView);

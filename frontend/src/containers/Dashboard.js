@@ -26,7 +26,7 @@ import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
 import { Redirect, useRouteMatch } from "react-router-dom";
 
 import Alert from "../components/Alert";
-import ShopView from "./ShopView";
+import OwnerShopView from "./OwnerShopView";
 import NoShopView from "./NoShopView";
 import { userInfo } from "../selectors/authSelectors";
 import {
@@ -283,7 +283,7 @@ function Dashboard({
 
           {/* Shop Products List */}
           <Grid item container xs={12} md={8}>
-            <ShopView
+            <OwnerShopView
               routeMatch={match}
               tabValue={tabValue}
               shopDetail={shopsList.length > 0 ? shopsList[selectedShop] : {}}
