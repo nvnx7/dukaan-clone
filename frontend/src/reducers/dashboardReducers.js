@@ -7,7 +7,11 @@ import {
   GET_SHOP_DETAIL_REQUEST,
   GET_SHOP_DETAIL_SUCCESS,
   GET_SHOP_DETAIL_FAILURE,
+  ADD_SHOP_REQUEST,
+  ADD_SHOP_SUCCESS,
+  ADD_SHOP_FAILURE,
   UPDATE_SHOP_DETAIL,
+  TOGGLE_ADD_SHOP_FORM_DIALOG,
 } from "../actions/dashboardActions";
 
 const initialState = {
@@ -18,6 +22,7 @@ const initialState = {
   error: "",
   info: "",
   drawerOpen: false,
+  addShopDialogFormOpen: false,
 };
 
 const dashboardReducer = (state = initialState, action) => {
@@ -54,19 +59,39 @@ const dashboardReducer = (state = initialState, action) => {
     case GET_SHOP_DETAIL_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
+    case ADD_SHOP_REQUEST:
+      return { ...state, loading: true };
+
+    case ADD_SHOP_SUCCESS:
+      const extendedShopsList = state.shopsList.slice(0);
+      extendedShopsList.push(action.payload);
+      return {
+        ...state,
+        shopsList: extendedShopsList,
+        loading: false,
+        info: "Successfully Added Shop!",
+        addShopDialogFormOpen: false,
+      };
+
+    case ADD_SHOP_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+
     case UPDATE_SHOP_DETAIL:
       const updatedShopDetail = action.payload;
       const updatedShopsList = state.shopsList.map((shopDetail) => {
-        if (shopDetail.id == updatedShopDetail.id) return updatedShopDetail;
+        if (shopDetail.id === updatedShopDetail.id) return updatedShopDetail;
         return shopDetail;
       });
       return {
         ...state,
         loading: false,
         error: "",
-        info: "Operation Successful!",
+        info: "Successfully Updated Shop!",
         shopsList: updatedShopsList,
       };
+
+    case TOGGLE_ADD_SHOP_FORM_DIALOG:
+      return { ...state, addShopDialogFormOpen: !state.addShopDialogFormOpen };
 
     default:
       return state;
