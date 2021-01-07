@@ -14,12 +14,14 @@ import {
   Card,
   CardContent,
   Box,
+  Button,
 } from "@material-ui/core";
 
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
 import StorefrontRoundedIcon from "@material-ui/icons/StorefrontRounded";
 import ShoppingCartRoundedIcon from "@material-ui/icons/ShoppingCartRounded";
 import ShowChartRoundedIcon from "@material-ui/icons/ShowChartRounded";
+import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
 
 import { Redirect, useRouteMatch } from "react-router-dom";
 
@@ -41,6 +43,7 @@ import {
   getShopDetail,
   hideErrorInfo,
   toggleDrawer,
+  copyShopLink,
 } from "../actions/dashboardActions";
 
 import {
@@ -70,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   title: {
-    fontWeight: "bold",
     padding: "16px 0px",
   },
   tabsContainer: {
@@ -112,6 +114,7 @@ function Dashboard({
   getShopDetail,
   changeTab,
   hideErrorInfo,
+  copyShopLink,
   toggleDrawer,
 }) {
   const classes = useStyles();
@@ -122,17 +125,19 @@ function Dashboard({
       getShopDetail(user["owner_shops"][selectedShop]);
   }, []);
 
-  console.log(user);
+  // Redirect to Home if not authenticated
   if (!user.authenticated) return <Redirect to="/" />;
+
+  // Return empty shop view if no shop added
+  if (user["owner_shops"].length === 0) return <NoShopView user={user} />;
 
   const handleTabChange = (e, newValue) => {
     changeTab(newValue);
     toggleDrawer();
   };
-
-  const handleDrawerToggle = () => {
-    toggleDrawer();
-  };
+  const handleDrawerToggle = () => toggleDrawer();
+  const handleCopyLink = () =>
+    copyShopLink({ url: user["owner_shops"][selectedShop] });
 
   const activeOrdersCount = getActiveOrdersCount(shopsList[selectedShop]);
   const pendingOrdersCount = getPendingOrdersCount(shopsList[selectedShop]);
@@ -140,8 +145,6 @@ function Dashboard({
   const outOfStockProductsCount = getOutOfStockProductsCount(
     shopsList[selectedShop]
   );
-
-  if (user["owner_shops"].length === 0) return <NoShopView user={user} />;
 
   return (
     <Grid
@@ -151,7 +154,7 @@ function Dashboard({
       alignItems="stretch"
     >
       <Grid item container xs={12} alignItems="center">
-        <Hidden mdUp xs={4}>
+        <Hidden mdUp xs={2}>
           <Grid item>
             <label htmlFor="icon-button-drawer">
               <IconButton
@@ -165,7 +168,13 @@ function Dashboard({
             </label>
           </Grid>
         </Hidden>
-        <Grid item xs={8} md={12}>
+
+        {/* Dummy grid to occupy space */}
+        <Hidden smDown>
+          <Grid item md={2}></Grid>
+        </Hidden>
+
+        <Grid item xs={8}>
           <Typography
             noWrap
             variant="h4"
@@ -174,6 +183,18 @@ function Dashboard({
           >
             {shopsList[selectedShop] ? shopsList[selectedShop].title : "TITLE"}
           </Typography>
+        </Grid>
+
+        <Grid item xs={2}>
+          <Button
+            className={classes.copyLinkBtn}
+            size="small"
+            onClick={handleCopyLink}
+            color="primary"
+            startIcon={<ShareRoundedIcon />}
+          >
+            Copy Link
+          </Button>
         </Grid>
       </Grid>
 
@@ -348,6 +369,7 @@ const mapDispatchToProps = (dispatch) => {
     getShopDetail: (shopUrl) => dispatch(getShopDetail(shopUrl)),
     hideErrorInfo: () => dispatch(hideErrorInfo()),
     toggleDrawer: () => dispatch(toggleDrawer()),
+    copyShopLink: (shopDetail) => dispatch(copyShopLink(shopDetail)),
   };
 };
 

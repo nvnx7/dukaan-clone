@@ -38,6 +38,22 @@ export const toggleAddShopFormDialog = () => ({
   type: TOGGLE_ADD_SHOP_FORM_DIALOG,
 });
 
+export const copyShopLink = (shopDetail) => {
+  return (dispatch) => {
+    const el = document.createElement("textarea");
+    el.value = shopDetail.url;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+
+    dispatch(setErrorOrInfo({ info: "Link Copied!" }));
+  };
+};
+
 // Get shop details action creators
 export const getShopDetailRequest = () => ({ type: GET_SHOP_DETAIL_REQUEST });
 export const getShopDetailSuccess = (shopDetail) => ({
