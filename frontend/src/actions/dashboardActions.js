@@ -1,5 +1,8 @@
 import axiosInstance from "../utils/networkUtils";
 
+import { updateUser } from "./authActions";
+import { addToUserShopsList } from "../utils/authUtils";
+
 // Dashboard actions
 export const DASHBOARD_TAB_CHANGE = "DASHBOARD_TAB_CHANGE";
 export const DASHBOARD_SELECT_SHOP = "DASHBOARD_SELECT_SHOP";
@@ -12,35 +15,39 @@ export const GET_SHOP_DETAIL_REQUEST = "GET_SHOP_DETAIL_REQUEST";
 export const GET_SHOP_DETAIL_SUCCESS = "GET_SHOP_DETAIL_SUCCESS";
 export const GET_SHOP_DETAIL_FAILURE = "GET_SHOP_DETAIL_FAILURE";
 
-// Update shop detail aciton
+// Add shop details actions
+export const ADD_SHOP_REQUEST = "ADD_SHOP_REQUEST";
+export const ADD_SHOP_SUCCESS = "ADD_SHOP_SUCCESS";
+export const ADD_SHOP_FAILURE = "ADD_SHOP_FAILURE";
+
+// Update shop detail action
 export const UPDATE_SHOP_DETAIL = "UPDATE_SHOP_DETAIL";
+
+export const TOGGLE_ADD_SHOP_FORM_DIALOG = "TOGGLE_ADD_SHOP_FORM_DIALOG";
 
 // Dashboard actions creators
 export const changeTab = (tabValue) => {
   return { type: DASHBOARD_TAB_CHANGE, payload: tabValue };
 };
-
 export const selectShop = (shopId) => {
   return { type: DASHBOARD_SELECT_SHOP, payload: shopId };
 };
-
 export const toggleDrawer = () => ({ type: DASHBOARD_TOGGLE_DRAWER });
 
-// Get shop details action creators
-export const getShopDetailRequest = () => ({
-  type: GET_SHOP_DETAIL_REQUEST,
+export const toggleAddShopFormDialog = () => ({
+  type: TOGGLE_ADD_SHOP_FORM_DIALOG,
 });
 
+// Get shop details action creators
+export const getShopDetailRequest = () => ({ type: GET_SHOP_DETAIL_REQUEST });
 export const getShopDetailSuccess = (shopDetail) => ({
   type: GET_SHOP_DETAIL_SUCCESS,
   payload: shopDetail,
 });
-
 export const getShopDetailFailure = (error) => ({
   type: GET_SHOP_DETAIL_FAILURE,
   payload: error,
 });
-
 export const getShopDetail = (shopUrl) => {
   return (dispatch) => {
     dispatch(getShopDetailRequest());
@@ -53,6 +60,38 @@ export const getShopDetail = (shopUrl) => {
       .catch((error) => {
         const errors = error.response.data;
         dispatch(getShopDetailFailure(errors));
+      });
+  };
+};
+
+// Get shop details action creators
+export const addShopRequest = () => ({ type: ADD_SHOP_REQUEST });
+export const addShopSuccess = (shopDetail) => ({
+  type: ADD_SHOP_SUCCESS,
+  payload: shopDetail,
+});
+export const addShopFailure = (error) => ({
+  type: ADD_SHOP_FAILURE,
+  payload: error,
+});
+export const addShop = (user, shopDetail) => {
+  return (dispatch) => {
+    dispatch(addShopRequest());
+    axiosInstance()
+      .post(`/shopowner/${user.id}/shops/`, shopDetail)
+      .then((response) => {
+        const addedShopDetail = response.data;
+        console.log(addedShopDetail);
+        const updatedUser = addToUserShopsList(user, addedShopDetail);
+        localStorage.setItem("user", updatedUser);
+        console.log(updatedUser);
+        dispatch(updateUser(updatedUser));
+        dispatch(addShopSuccess(addedShopDetail));
+      })
+      .catch((error) => {
+        // const errors = error.response.data;
+        console.log(error);
+        dispatch(addShopFailure("Error Adding Shop!"));
       });
   };
 };

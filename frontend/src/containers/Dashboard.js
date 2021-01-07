@@ -20,10 +20,12 @@ import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
 import StorefrontRoundedIcon from "@material-ui/icons/StorefrontRounded";
 import ShoppingCartRoundedIcon from "@material-ui/icons/ShoppingCartRounded";
 import ShowChartRoundedIcon from "@material-ui/icons/ShowChartRounded";
+
 import { Redirect, useRouteMatch } from "react-router-dom";
 
 import Alert from "../components/Alert";
 import ShopView from "./ShopView";
+import NoShopView from "./NoShopView";
 import { userInfo } from "../selectors/authSelectors";
 import {
   tabValue,
@@ -116,10 +118,11 @@ function Dashboard({
   const match = useRouteMatch();
 
   useEffect(() => {
-    if (user["owner_shops"][selectedShop])
+    if (user.authenticated && user["owner_shops"][selectedShop])
       getShopDetail(user["owner_shops"][selectedShop]);
   }, []);
 
+  console.log(user);
   if (!user.authenticated) return <Redirect to="/" />;
 
   const handleTabChange = (e, newValue) => {
@@ -137,6 +140,8 @@ function Dashboard({
   const outOfStockProductsCount = getOutOfStockProductsCount(
     shopsList[selectedShop]
   );
+
+  if (user["owner_shops"].length === 0) return <NoShopView user={user} />;
 
   return (
     <Grid
