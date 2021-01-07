@@ -8,6 +8,7 @@ import {
   AUTH_LOGOUT_REQUEST,
   AUTH_LOGOUT_SUCCESS,
   AUTH_LOGOUT_FAILURE,
+  AUTH_UPDATE_USER,
   AUTH_ERROR_HIDE,
 } from "../actions/authActions";
 
@@ -41,6 +42,9 @@ const authReducer = (state = initialState, action) => {
       return initialState;
     case AUTH_LOGOUT_FAILURE:
       return { ...state, loading: false, error: action.payload };
+
+    case AUTH_UPDATE_USER:
+      return { ...state, user: action.payload };
 
     case AUTH_ERROR_HIDE:
       return { ...state, error: "" };

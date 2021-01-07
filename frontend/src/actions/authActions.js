@@ -15,6 +15,9 @@ export const AUTH_LOGOUT_REQUEST = "AUTH_LOGOUT_REQUEST";
 export const AUTH_LOGOUT_SUCCESS = "AUTH_LOGOUT_SUCCESS";
 export const AUTH_LOGOUT_FAILURE = "AUTH_LOGOUT_FAILURE";
 
+// Update actions
+export const AUTH_UPDATE_USER = "AUTH_UPDATE_USER ";
+
 // Visibility of error message
 export const AUTH_ERROR_HIDE = "AUTH_ERROR_HIDE";
 
@@ -132,6 +135,7 @@ export const logout = () => {
       .post("/logout/")
       .then((response) => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         dispatch(logoutSuccess());
       })
       .catch((error) => {
@@ -147,6 +151,11 @@ export const logout = () => {
       });
   };
 };
+
+export const updateUser = (userInfo) => ({
+  type: AUTH_UPDATE_USER,
+  payload: userInfo,
+});
 
 // Error action creators
 export const hideError = () => ({ type: AUTH_ERROR_HIDE });
