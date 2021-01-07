@@ -16,6 +16,7 @@ import bgImage from "../images/dukan.jpg";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    height: "100%",
   },
   img: {
     maxWidth: 100,
@@ -64,17 +65,15 @@ function Home({ user, loading, error, login, register, hideError }) {
         </Typography>
       </Grid>
 
-      <Grid item md={6}>
-        <Paper square>
-          <Switch>
-            <Route path="/signup">
-              <SignUpForm loading={loading} onRegister={register} />
-            </Route>
-            <Route exact path="/">
-              <LoginForm loading={loading} onLogin={login} />
-            </Route>
-          </Switch>
-        </Paper>
+      <Grid item md={6} component={Paper}>
+        <Switch>
+          <Route path="/signup">
+            <SignUpForm loading={loading} onRegister={register} />
+          </Route>
+          <Route exact path="/">
+            <LoginForm loading={loading} onLogin={login} />
+          </Route>
+        </Switch>
       </Grid>
 
       <Snackbar

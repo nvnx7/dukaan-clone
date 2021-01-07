@@ -1,23 +1,17 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, Box } from "@material-ui/core";
 
 import EditableProductListTile from "./EditableProductListTile";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    overflowY: "scroll",
-    overflowX: "hidden",
+    height: "100%",
   },
-  gridList: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    // width: 500,
-    height: 550,
+  itemList: {
+    height: "100%",
+    maxHeight: "550px",
+    overflowY: "scroll",
   },
 }));
 
@@ -28,25 +22,41 @@ export default function EditableProductList({ productsData, onItemClick }) {
     return total;
   }, 0);
   return (
-    <div className={classes.root}>
+    <Box
+      className={classes.root}
+      p={1}
+      display="flex"
+      flexDirection="column"
+      alignItems="stretch"
+      justifyContent="flex-start"
+    >
+      <Box p={1}>
+        <Typography>{`${productsData.length} Products / ${outOfStockProductCount} Out Of Stock`}</Typography>
+      </Box>
+
       {productsData.length > 0 ? (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography>{`${productsData.length} Products / ${outOfStockProductCount} Out Of Stock`}</Typography>
-          </Grid>
+        <Grid
+          className={classes.itemList}
+          container
+          spacing={2}
+          alignItems="flex-start"
+          justify="flex-start"
+        >
           {productsData.map((product) => (
-            <EditableProductListTile
-              id={product.id}
-              key={product.image}
-              title={product.title}
-              description={product.description}
-              imageSrc={product.image}
-              price={product.price}
-              stock={product.stock}
-              unit={product.unit}
-              category={product.category}
-              onClick={onItemClick}
-            />
+            <Grid item xs={12} sm={6} md={4} lg={3}>
+              <EditableProductListTile
+                id={product.id}
+                key={product.image}
+                title={product.title}
+                description={product.description}
+                imageSrc={product.image}
+                price={product.price}
+                stock={product.stock}
+                unit={product.unit}
+                category={product.category}
+                onClick={onItemClick}
+              />
+            </Grid>
           ))}
         </Grid>
       ) : (
@@ -54,6 +64,6 @@ export default function EditableProductList({ productsData, onItemClick }) {
           No Products Found. Add One Now!
         </Typography>
       )}
-    </div>
+    </Box>
   );
 }

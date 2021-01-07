@@ -53,13 +53,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-  },
-  title: {
-    fontWeight: "bold",
-    padding: "16px 0px",
+    height: "100%",
   },
   listContainer: {
     position: "relative",
+    height: "100%",
   },
   fab: {
     position: "absolute",
@@ -109,7 +107,7 @@ function ShopView({
   const pendingRevenue = getPendingRevenue(shopDetail);
 
   return (
-    <Box className={classes.root} p={4} fullWidth>
+    <Box className={classes.root} fullWidth>
       <Switch>
         <Route path={`${routeMatch.path}/orders`}>
           <Container fullWidth>
@@ -217,7 +215,7 @@ function ShopView({
         </Route>
 
         <Route path={`${routeMatch.path}/`}>
-          <Grid className={classes.listContainer} item fullWidth xs={12}>
+          <Box className={classes.listContainer} fullWidth>
             <EditableProductList
               fullWidth
               productsData={
@@ -234,7 +232,7 @@ function ShopView({
               <AddRoundedIcon />
               Add Product
             </Fab>
-          </Grid>
+          </Box>
         </Route>
       </Switch>
 

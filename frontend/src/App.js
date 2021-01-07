@@ -1,6 +1,6 @@
 import { Provider } from "react-redux";
 
-import { Box } from "@material-ui/core";
+import { Box, CssBaseline } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { Switch, Route } from "react-router-dom";
@@ -14,12 +14,13 @@ import Dashboard from "./containers/Dashboard";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    height: "100%",
   },
   content: {
     flexGrow: 1,
   },
   header: {
-    // flexGrow: 1,
+    flexGrow: 1,
   },
 }));
 
@@ -29,11 +30,12 @@ function App() {
   return (
     <Provider store={store}>
       <Box className={classes.root} container direction="column">
-        <Box className={classes.header} item>
+        <CssBaseline />
+        <Box className={classes.header} item height="8%">
           <Header />
         </Box>
 
-        <Box className={classes.content} item>
+        <Box className={classes.content} item height="92%">
           <Switch>
             <Route path="/dashboard">
               <Dashboard />

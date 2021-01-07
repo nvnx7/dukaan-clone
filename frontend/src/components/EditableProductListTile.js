@@ -39,46 +39,44 @@ export default function EditableProductListTile({
 }) {
   const classes = useStyles();
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
-      <Card>
-        <CardActionArea>
-          <CardMedia className={classes.media} image={imageSrc} />
-          <CardContent>
-            <Typography gutterBottom variant="h6" component="h2">
-              {title}
-            </Typography>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              component="p"
-              noWrap
-            >
-              {`Rs. ${price}/${unit} - ${stock} Available`}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions disableSpacing>
-          <Button
-            variant="text"
-            color="primary"
-            startIcon={<EditRoundedIcon />}
-            onClick={() =>
-              onClick({
-                id,
-                title,
-                description,
-                price,
-                stock,
-                unit,
-                category,
-                imageSrc,
-              })
-            }
+    <Card>
+      <CardActionArea>
+        <CardMedia className={classes.media} image={imageSrc} />
+        <CardContent>
+          <Typography gutterBottom variant="h6" component="h2">
+            {title}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            component="p"
+            noWrap
           >
-            Edit
-          </Button>
-        </CardActions>
-      </Card>
-    </Grid>
+            {`Rs. ${price}/${unit} - ${stock} Available`}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+      <CardActions disableSpacing>
+        <Button
+          variant="text"
+          color="primary"
+          startIcon={<EditRoundedIcon />}
+          onClick={() =>
+            onClick({
+              id,
+              title,
+              description,
+              price,
+              stock,
+              unit,
+              category,
+              imageSrc,
+            })
+          }
+        >
+          Edit
+        </Button>
+      </CardActions>
+    </Card>
   );
 }

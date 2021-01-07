@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   form: {
-    width: "100%",
+    // width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {

@@ -71,12 +71,14 @@ const styledTab = (label, icon) => {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    height: "100%",
   },
   title: {
-    padding: "16px 0px",
+    // padding: "16px 0px",
+    // flexShrink: 1,
   },
-  tabsContainer: {
-    flexGrow: 1,
+  dashboardContent: {
+    height: "100%",
   },
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
@@ -147,186 +149,197 @@ function Dashboard({
   );
 
   return (
-    <Grid
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="stretch"
       className={classes.root}
       container
-      direction="column"
-      alignItems="stretch"
     >
-      <Grid item container xs={12} alignItems="center">
-        <Hidden mdUp xs={2}>
-          <Grid item>
-            <label htmlFor="icon-button-drawer">
-              <IconButton
-                color="primary"
-                aria-label="open drawer"
-                component="span"
-                onClick={handleDrawerToggle}
+      {/* Title Bar */}
+      <Box p={2}>
+        <Grid container alignItems="center">
+          <Hidden mdUp xs={2}>
+            <Grid item>
+              <label htmlFor="icon-button-drawer">
+                <IconButton
+                  color="primary"
+                  aria-label="open drawer"
+                  component="span"
+                  onClick={handleDrawerToggle}
+                >
+                  <MenuRoundedIcon fontSize="large" />
+                </IconButton>
+              </label>
+            </Grid>
+          </Hidden>
+
+          {/* Dummy grid to occupy space */}
+          <Hidden smDown>
+            <Grid item md={2}></Grid>
+          </Hidden>
+
+          <Grid item xs={8}>
+            <Typography
+              noWrap
+              variant="h4"
+              className={classes.title}
+              align="center"
+            >
+              {shopsList[selectedShop]
+                ? shopsList[selectedShop].title
+                : "TITLE"}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={2}>
+            <Button
+              className={classes.copyLinkBtn}
+              size="small"
+              onClick={handleCopyLink}
+              color="primary"
+              startIcon={<ShareRoundedIcon />}
+            >
+              Copy Link
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box>
+        <Divider orientation="horizontal" variant="middle" />
+      </Box>
+
+      {/* Dashboard Content */}
+      <Box flexGrow={1}>
+        <Grid
+          className={classes.dashboardContent}
+          container
+          justify="space-between"
+          alignItems="stretch"
+        >
+          {/* Left Nav Pane for small screens */}
+          <Hidden mdUp>
+            <Drawer
+              className={classes.drawer}
+              container={container}
+              variant="temporary"
+              anchor="left"
+              open={drawerOpen}
+              onClose={handleDrawerToggle}
+            >
+              <Tabs
+                className={classes.drawerTabs}
+                orientation="vertical"
+                variant="fullWidth"
+                value={tabValue}
+                indicatorColor="primary"
+                onChange={handleTabChange}
+                textColor="primary"
               >
-                <MenuRoundedIcon fontSize="large" />
-              </IconButton>
-            </label>
+                {styledTab(
+                  "Stock",
+                  <StorefrontRoundedIcon className={classes.tabIcon} />
+                )}
+                {styledTab(
+                  "Orders",
+                  <ShoppingCartRoundedIcon className={classes.tabIcon} />
+                )}
+                {styledTab(
+                  "Stats",
+                  <ShowChartRoundedIcon className={classes.tabIcon} />
+                )}
+              </Tabs>
+            </Drawer>
+          </Hidden>
+
+          {/* Left Nav Pane for large screens */}
+          <Hidden smDown>
+            <Grid item md={2}>
+              <Tabs
+                className={classes.tabs}
+                orientation="vertical"
+                variant="fullWidth"
+                value={tabValue}
+                indicatorColor="primary"
+                onChange={handleTabChange}
+                textColor="primary"
+              >
+                {styledTab(
+                  "Stock",
+                  <StorefrontRoundedIcon className={classes.tabIcon} />
+                )}
+                {styledTab(
+                  "Orders",
+                  <ShoppingCartRoundedIcon className={classes.tabIcon} />
+                )}
+                {styledTab(
+                  "Stats",
+                  <ShowChartRoundedIcon className={classes.tabIcon} />
+                )}
+              </Tabs>
+            </Grid>
+          </Hidden>
+
+          {/* Shop Products List */}
+          <Grid item container xs={12} md={8}>
+            <ShopView
+              routeMatch={match}
+              tabValue={tabValue}
+              shopDetail={shopsList.length > 0 ? shopsList[selectedShop] : {}}
+            />
           </Grid>
-        </Hidden>
 
-        {/* Dummy grid to occupy space */}
-        <Hidden smDown>
-          <Grid item md={2}></Grid>
-        </Hidden>
-
-        <Grid item xs={8}>
-          <Typography
-            noWrap
-            variant="h4"
-            className={classes.title}
-            align="center"
-          >
-            {shopsList[selectedShop] ? shopsList[selectedShop].title : "TITLE"}
-          </Typography>
-        </Grid>
-
-        <Grid item xs={2}>
-          <Button
-            className={classes.copyLinkBtn}
-            size="small"
-            onClick={handleCopyLink}
-            color="primary"
-            startIcon={<ShareRoundedIcon />}
-          >
-            Copy Link
-          </Button>
-        </Grid>
-      </Grid>
-
-      <Divider orientation="horizontal" variant="middle" />
-
-      <Grid
-        className={classes.tabsContainer}
-        item
-        container
-        xs={12}
-        justify="space-between"
-        alignItems="stretch"
-      >
-        {/* Left Nav Pane for small screens */}
-        <Hidden mdUp>
-          <Drawer
-            className={classes.drawer}
-            container={container}
-            variant="temporary"
-            anchor="left"
-            open={drawerOpen}
-            onClose={handleDrawerToggle}
-          >
-            <Tabs
-              className={classes.drawerTabs}
-              orientation="vertical"
-              variant="fullWidth"
-              value={tabValue}
-              indicatorColor="primary"
-              onChange={handleTabChange}
-              textColor="primary"
+          {/* Right Pane */}
+          <Hidden smDown>
+            <Grid
+              className={classes.detail}
+              item
+              md={2}
+              direction="column"
+              justify="flex-start"
             >
-              {styledTab(
-                "Stock",
-                <StorefrontRoundedIcon className={classes.tabIcon} />
-              )}
-              {styledTab(
-                "Orders",
-                <ShoppingCartRoundedIcon className={classes.tabIcon} />
-              )}
-              {styledTab(
-                "Stats",
-                <ShowChartRoundedIcon className={classes.tabIcon} />
-              )}
-            </Tabs>
-          </Drawer>
-        </Hidden>
+              <Box m={1}>
+                <Card>
+                  <CardContent>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      gutterBottom
+                    >
+                      Active Orders
+                    </Typography>
+                    <Typography variant="h4">{activeOrdersCount}</Typography>
+                    <Typography variant="body2" component="p" color="error">
+                      {pendingOrdersCount} Pending
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Box>
 
-        {/* Left Nav Pane for large screens */}
-        <Hidden smDown>
-          <Grid item md={2}>
-            <Tabs
-              className={classes.tabs}
-              orientation="vertical"
-              variant="fullWidth"
-              value={tabValue}
-              indicatorColor="primary"
-              onChange={handleTabChange}
-              textColor="primary"
-            >
-              {styledTab(
-                "Stock",
-                <StorefrontRoundedIcon className={classes.tabIcon} />
-              )}
-              {styledTab(
-                "Orders",
-                <ShoppingCartRoundedIcon className={classes.tabIcon} />
-              )}
-              {styledTab(
-                "Stats",
-                <ShowChartRoundedIcon className={classes.tabIcon} />
-              )}
-            </Tabs>
-          </Grid>
-        </Hidden>
-
-        <Grid item container xs={12} md={8}>
-          <ShopView
-            routeMatch={match}
-            tabValue={tabValue}
-            shopDetail={shopsList.length > 0 ? shopsList[selectedShop] : {}}
-          />
+              <Box m={1}>
+                <Card>
+                  <CardContent>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      gutterBottom
+                    >
+                      Total Products
+                    </Typography>
+                    <Typography variant="h4" component="h2">
+                      {productsCount}
+                    </Typography>
+                    <Typography variant="body2" component="p" color="error">
+                      {outOfStockProductsCount} Out Of Stock
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Box>
+            </Grid>
+          </Hidden>
         </Grid>
-
-        <Hidden smDown>
-          <Grid
-            className={classes.detail}
-            item
-            md={2}
-            direction="column"
-            justify="flex-start"
-          >
-            <Box m={1}>
-              <Card>
-                <CardContent>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    Active Orders
-                  </Typography>
-                  <Typography variant="h4">{activeOrdersCount}</Typography>
-                  <Typography variant="body2" component="p" color="error">
-                    {pendingOrdersCount} Pending
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-
-            <Box m={1}>
-              <Card>
-                <CardContent>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    Total Products
-                  </Typography>
-                  <Typography variant="h4" component="h2">
-                    {productsCount}
-                  </Typography>
-                  <Typography variant="body2" component="p" color="error">
-                    {outOfStockProductsCount} Out Of Stock
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-          </Grid>
-        </Hidden>
-      </Grid>
+      </Box>
 
       <Snackbar
         open={Boolean(error)}
@@ -347,7 +360,7 @@ function Dashboard({
           {info}
         </Alert>
       </Snackbar>
-    </Grid>
+    </Box>
   );
 }
 

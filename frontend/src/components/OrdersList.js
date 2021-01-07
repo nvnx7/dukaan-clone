@@ -33,10 +33,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    // overflowY: "scroll",
+    height: "100%",
+    overflow: "hidden",
   },
   tableContainer: {
-    // overflowY: "scroll",
+    overflowY: "scroll",
+    maxHeight: "550px",
   },
   table: {
     minWidth: 650,

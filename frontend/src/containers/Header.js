@@ -18,6 +18,7 @@ import { userInfo } from "../selectors/authSelectors";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    height: "100%",
   },
   title: {
     flexGrow: 1,
