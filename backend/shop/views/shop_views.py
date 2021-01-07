@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -29,7 +30,7 @@ class ShopViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         shop_id = kwargs['pk']
-        shop = self.queryset.get(pk=shop_id)
+        shop = get_object_or_404(self.queryset, pk=shop_id)
         shopSerializer = ShopSerializer(
             instance=shop, context={'request': request})
 
