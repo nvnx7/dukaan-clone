@@ -29,25 +29,31 @@ export default function EditableProductList({ productsData, onItemClick }) {
   }, 0);
   return (
     <div className={classes.root}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography>{`${productsData.length} Products / ${outOfStockProductCount} Out Of Stock`}</Typography>
+      {productsData.length > 0 ? (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography>{`${productsData.length} Products / ${outOfStockProductCount} Out Of Stock`}</Typography>
+          </Grid>
+          {productsData.map((product) => (
+            <EditableProductListTile
+              id={product.id}
+              key={product.image}
+              title={product.title}
+              description={product.description}
+              imageSrc={product.image}
+              price={product.price}
+              stock={product.stock}
+              unit={product.unit}
+              category={product.category}
+              onClick={onItemClick}
+            />
+          ))}
         </Grid>
-        {productsData.map((product) => (
-          <EditableProductListTile
-            id={product.id}
-            key={product.image}
-            title={product.title}
-            description={product.description}
-            imageSrc={product.image}
-            price={product.price}
-            stock={product.stock}
-            unit={product.unit}
-            category={product.category}
-            onClick={onItemClick}
-          />
-        ))}
-      </Grid>
+      ) : (
+        <Typography variant="body2" color="textSecondary" align="center">
+          No Products Found. Add One Now!
+        </Typography>
+      )}
     </div>
   );
 }
