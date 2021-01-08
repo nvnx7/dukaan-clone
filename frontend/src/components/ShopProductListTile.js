@@ -46,9 +46,8 @@ export default function ShopProductListTile({
 }) {
   const classes = useStyles();
 
-  const handleClick = (n) => {
-    const nBag = isNaN(count) ? 0 : count;
-    const updatedCount = nBag + n < 0 ? 0 : nBag + n;
+  const handleClick = (count) => {
+    if (count < 0) count = 0;
     onChangeCount(
       {
         id,
@@ -61,7 +60,7 @@ export default function ShopProductListTile({
         imageSrc,
         count,
       },
-      updatedCount
+      count
     );
   };
 
@@ -86,13 +85,13 @@ export default function ShopProductListTile({
       <CardActions disableSpacing>
         {count > 0 ? (
           <ButtonGroup variant="outlined" color="primary">
-            <IconButton size="small" onClick={() => handleClick(-1)}>
+            <IconButton size="small" onClick={() => handleClick(count - 1)}>
               <RemoveRoundedIcon />
             </IconButton>
             <Typography className={classes.count} align="center">
               {count || 0}
             </Typography>
-            <IconButton size="small" onClick={() => handleClick(1)}>
+            <IconButton size="small" onClick={() => handleClick(count + 1)}>
               <AddRoundedIcon />
             </IconButton>
           </ButtonGroup>
@@ -101,7 +100,7 @@ export default function ShopProductListTile({
             variant="text"
             color="primary"
             startIcon={<AddRoundedIcon />}
-            onClick={() => handleClick(1)}
+            onClick={() => handleClick(count + 1)}
           >
             Add To Bag
           </Button>
