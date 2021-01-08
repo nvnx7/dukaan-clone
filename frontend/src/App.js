@@ -10,6 +10,7 @@ import store from "./store";
 import Header from "./containers/Header";
 import Home from "./containers/Home";
 import Dashboard from "./containers/Dashboard";
+import ShopfrontView from "./containers/ShopfrontView";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +40,9 @@ function App() {
           <Switch>
             <Route path="/dashboard">
               <Dashboard />
+            </Route>
+            <Route path="/shop/:shopId">
+              <ShopfrontView />
             </Route>
             <Route path="/">
               <Home />
