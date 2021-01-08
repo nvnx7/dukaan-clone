@@ -19,3 +19,22 @@ export function getTotalPriceFromBag(bag) {
     return total + product.count * product.price;
   }, 0);
 }
+
+export function getOrderDataFromBag(bag, customerData) {
+  const orders = bag.map((bagProduct) => {
+    return {
+      product: bagProduct.id,
+      quantity: bagProduct.count,
+      delivery_address: customerData.deliveryAddress,
+    };
+  });
+
+  return {
+    orders,
+    customer: {
+      first_name: customerData.firstName,
+      last_name: customerData.lastName,
+      phone: customerData.phone,
+    },
+  };
+}
