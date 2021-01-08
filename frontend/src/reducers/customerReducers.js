@@ -3,6 +3,7 @@ import {
   CUSTOMER_GET_SHOP_SUCCESS,
   CUSTOMER_GET_SHOP_FAILURE,
   UPDATE_BAG,
+  TOGGLE_PLACE_ORDER_FORM_DIALOG,
   CUSTOMER_SET_ERROR_OR_INFO,
   CUSTOMER_ERROR_INFO_HIDE,
 } from "../actions/customerActions";
@@ -10,7 +11,10 @@ import {
 const initialState = {
   customer: {},
   shopDetail: {},
-  bag: [],
+  bag: localStorage.getItem("bag")
+    ? JSON.parse(localStorage.getItem("bag"))
+    : [],
+  placeOrderFormDialogOpen: false,
   error: "",
   info: "",
   loading: false,
@@ -27,6 +31,12 @@ const customerReducer = (state = initialState, action) => {
 
     case UPDATE_BAG:
       return { ...state, bag: action.payload };
+
+    case TOGGLE_PLACE_ORDER_FORM_DIALOG:
+      return {
+        ...state,
+        placeOrderFormDialogOpen: !state.placeOrderFormDialogOpen,
+      };
 
     case CUSTOMER_SET_ERROR_OR_INFO:
       const errorOrInfo = action.payload;

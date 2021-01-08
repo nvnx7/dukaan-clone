@@ -9,6 +9,9 @@ export const CUSTOMER_GET_SHOP_FAILURE = "CUSTOMER_GET_SHOP_FAILURE";
 // Bag Actions
 export const UPDATE_BAG = "UPDATE_BAG";
 
+export const TOGGLE_PLACE_ORDER_FORM_DIALOG = "TOGGLE_PLACE_ORDER_FORM_DIALOG";
+
+// Error/Info message actions
 export const CUSTOMER_SET_ERROR_OR_INFO = "CUSTOMER_SET_ERROR_OR_INFO";
 export const CUSTOMER_ERROR_INFO_HIDE = "CUSTOMER_ERROR_INFO_HIDE";
 
@@ -56,6 +59,10 @@ export const updateProductCount = (bag, product, count) => {
     localStorage.setItem("bag", JSON.stringify(updatedBag));
     dispatch(updateBag(updatedBag));
   };
+};
+
+export const togglePlaceOrderFormDialog = {
+  type: TOGGLE_PLACE_ORDER_FORM_DIALOG,
 };
 
 export const setErrorOrInfo = (errorOrInfo) => ({
