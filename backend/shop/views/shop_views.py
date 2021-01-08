@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -8,7 +8,7 @@ from rest_framework import status
 from ..models.shop import Shop
 from ..models.auth import User
 from ..models.customer import Order
-from ..serializers.shop_serializers import ShopSerializer, ShopOwnerSerializer
+from ..serializers.shop_serializers import ShopSerializer, ShopOwnerSerializer, CustomerShopSerializer
 from ..serializers.customer_serializers import OrderSerializer
 from ..permissions import IsOwnerOrReadOnly
 
@@ -26,7 +26,7 @@ class ShopViewSet(viewsets.ModelViewSet):
     serializer_class = ShopSerializer
 
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
 
     def retrieve(self, request, *args, **kwargs):
         shop_id = kwargs['pk']
@@ -36,10 +36,14 @@ class ShopViewSet(viewsets.ModelViewSet):
 
         # If user is not authenticated owner of shop send only shop & products details
         if not request.user.is_authenticated:
-            return Response(shopSerializer.data, status=status.HTTP_200_OK)
+            customer_shop_serializer = CustomerShopSerializer(
+                instance=shop, context={'request': request})
+            response = dict(customer_shop_serializer.data)
+            response['contact'] = shop.owner.phone
+            return Response(response, status=status.HTTP_200_OK)
 
         # Else include all order details to this shop
-        orders = Order.objects.filter(shop=shop_id)
+        orders = get_list_or_404(Order, shop=shop_id)
         ordersSerializer = OrderSerializer(
             instance=orders, many=True, context={'request': request})
 
