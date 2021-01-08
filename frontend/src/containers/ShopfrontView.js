@@ -12,9 +12,16 @@ import {
   Box,
   Button,
   Link,
+  Container,
+  Fab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@material-ui/core";
 
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import DoneRoundedIcon from "@material-ui/icons/DoneRounded";
 
 import {
   useRouteMatch,
@@ -25,18 +32,28 @@ import {
 } from "react-router-dom";
 
 import ShopProductList from "../components/ShopProductList";
+import ShoppingBag from "../components/ShoppingBag";
+import Alert from "../components/Alert";
+import CustomerForm from "../components/CustomerForm";
+
 import {
   shopDetail,
   bag,
   loading,
   errorMessage,
   infoMessage,
+  placeOrderFormDialogOpen,
 } from "../selectors/customerSelectors";
 import {
   getCustomerShop,
   updateProductCount,
+  togglePlaceOrderFormDialog,
+  hideErrorInfo,
 } from "../actions/customerActions";
-import { getTotalPriceFromBag } from "../utils/customerUtils";
+import {
+  getTotalPriceFromBag,
+  getOrderDataFromBag,
+} from "../utils/customerUtils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +67,15 @@ const useStyles = makeStyles((theme) => ({
   bag: {
     borderLeft: `1px solid ${theme.palette.divider}`,
   },
+  bagContainer: {
+    position: "relative",
+    maxWidth: "1000px",
+  },
+  fab: {
+    position: "absolute",
+    right: "42px",
+    bottom: "4px",
+  },
 }));
 
 function ShopfrontView({
@@ -59,10 +85,13 @@ function ShopfrontView({
   loading,
   error,
   info,
+  placeOrderFormDialogOpen,
 
   //dispatchers
   getCustomerShop,
   updateProductCount,
+  hideErrorInfo,
+  togglePlaceOrderFormDialog,
 }) {
   const classes = useStyles();
   const { shopId } = useParams();
@@ -73,15 +102,18 @@ function ShopfrontView({
     getCustomerShop(shopId);
   }, []);
 
-  // console.log(shopDetail);
+  const path = `${match.path}`.replace(":shopId", shopId);
 
   const handleChangeCount = (product, count) => {
     updateProductCount(bag, product, count);
   };
 
-  let shopProductsData = shopDetail["shop_products"]
-    ? shopDetail["shop_products"]
-    : [];
+  const handlePlaceOrder = (customerData) => {
+    const orderData = getOrderDataFromBag(bag, customerData);
+    console.log(orderData);
+  };
+
+  let shopProductsData = shopDetail["shop_products"] || [];
   if (shopProductsData.length > 0) {
     shopProductsData = shopProductsData.map((shopProduct, idx) => {
       const bagProduct = bag.find((v) => shopProduct.id === v.id);
@@ -125,22 +157,21 @@ function ShopfrontView({
           </Grid>
 
           <Grid item xs={2}>
-            <Button
-              className={classes.copyLinkBtn}
-              variant="outlined"
-              //   onClick={handleCopyLink}
+            <Link
+              component={RouterLink}
+              to={`${path}/bag`}
+              underline="none"
               color="primary"
-              startIcon={<ShoppingBasketIcon />}
             >
-              <Link
-                component={RouterLink}
-                to={`${match.path}/bag`}
-                underline="none"
+              <Button
+                className={classes.copyLinkBtn}
+                variant="outlined"
                 color="primary"
+                startIcon={<ShoppingBasketIcon />}
               >
                 BAG
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </Grid>
         </Grid>
       </Box>
@@ -179,9 +210,38 @@ function ShopfrontView({
 
           {/* Products List / BAG */}
           <Switch>
-            <Route path={`${match.path}/bag`}>
-              <Grid item container xs={12} md={8}>
-                BAG
+            <Route path={`${path}/bag`}>
+              <Grid item xs={12} md={8}>
+                <Box p={2}>
+                  <Link
+                    component={RouterLink}
+                    to={`${path}/`}
+                    underline="none"
+                    color="textPrimary"
+                  >
+                    <Button
+                      variant="contained"
+                      startIcon={<ArrowBackIcon />}
+                      color="primary"
+                    >
+                      Back To Shop
+                    </Button>
+                  </Link>
+                  <Container className={classes.bagContainer}>
+                    <ShoppingBag bag={bag} onChangeCount={handleChangeCount} />
+                    {
+                      <Fab
+                        className={classes.fab}
+                        color="primary"
+                        variant="extended"
+                        onClick={togglePlaceOrderFormDialog}
+                      >
+                        <DoneRoundedIcon />
+                        Place Order
+                      </Fab>
+                    }
+                  </Container>
+                </Box>
               </Grid>
             </Route>
             <Route path={`${match.path}/`}>
@@ -216,10 +276,63 @@ function ShopfrontView({
                   </CardContent>
                 </Card>
               </Box>
+
+              <Box m={1}>
+                <Typography variant="subtitle2" color="primary">
+                  In your Bag
+                </Typography>
+                {bag.map((product) => (
+                  <Box p={1}>
+                    <Typography variant="subtitle2">{product.title}</Typography>
+                    <Typography variant="body2" component="span">
+                      Qty. {product.count}&nbsp;&nbsp;&nbsp;
+                    </Typography>
+                    <Typography variant="body2" component="span">
+                      Price {product.price}/{product.unit}
+                    </Typography>
+                    <Divider orientation="horizontal" />
+                  </Box>
+                ))}
+              </Box>
             </Grid>
           </Hidden>
         </Grid>
       </Box>
+
+      <Dialog
+        open={placeOrderFormDialogOpen}
+        onClose={togglePlaceOrderFormDialog}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle>Order Details</DialogTitle>
+        <DialogContent>
+          <CustomerForm
+            loading={loading}
+            onSave={handlePlaceOrder}
+            onCancel={togglePlaceOrderFormDialog}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Snackbar
+        open={Boolean(error)}
+        autoHideDuration={3000}
+        onClose={hideErrorInfo}
+      >
+        <Alert severity="error" onClose={hideErrorInfo}>
+          {error}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        open={Boolean(info)}
+        autoHideDuration={3000}
+        onClose={hideErrorInfo}
+      >
+        <Alert severity="success" onClose={hideErrorInfo}>
+          {info}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
@@ -229,6 +342,7 @@ const mapStateToProps = (state) => {
     loading: loading(state),
     shopDetail: shopDetail(state),
     bag: bag(state),
+    placeOrderFormDialogOpen: placeOrderFormDialogOpen(state),
     error: errorMessage(state),
     info: infoMessage(state),
   };
@@ -239,7 +353,8 @@ const mapDispatchToProps = (dispatch) => {
     getCustomerShop: (shopId) => dispatch(getCustomerShop(shopId)),
     updateProductCount: (bag, product, count) =>
       dispatch(updateProductCount(bag, product, count)),
-    //   hideErrorInfo: () => dispatch(hideErrorInfo()),
+    togglePlaceOrderFormDialog: () => dispatch(togglePlaceOrderFormDialog),
+    hideErrorInfo: () => dispatch(hideErrorInfo()),
   };
 };
 
