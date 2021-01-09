@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -43,7 +43,7 @@ class ShopViewSet(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_200_OK)
 
         # Else include all order details to this shop
-        orders = get_list_or_404(Order, shop=shop_id)
+        orders = Order.objects.filter(shop=shop_id)
         ordersSerializer = OrderSerializer(
             instance=orders, many=True, context={'request': request})
 
