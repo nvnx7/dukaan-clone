@@ -20,7 +20,8 @@ export const ADD_SHOP_REQUEST = "ADD_SHOP_REQUEST";
 export const ADD_SHOP_SUCCESS = "ADD_SHOP_SUCCESS";
 export const ADD_SHOP_FAILURE = "ADD_SHOP_FAILURE";
 
-// Update shop detail action
+// Update shop action
+export const UPDATE_SHOP_LIST = "UPDATE_SHOP_LIST";
 export const UPDATE_SHOP_DETAIL = "UPDATE_SHOP_DETAIL";
 
 export const TOGGLE_ADD_SHOP_FORM_DIALOG = "TOGGLE_ADD_SHOP_FORM_DIALOG";
@@ -116,6 +117,10 @@ export const addShop = (user, shopDetail) => {
 export const updateShopDetail = (updatedShopDetail) => ({
   type: UPDATE_SHOP_DETAIL,
   payload: updatedShopDetail,
+});
+export const updateShopsList = (updatedShopsList) => ({
+  type: UPDATE_SHOP_LIST,
+  payload: updatedShopsList,
 });
 
 export const setErrorOrInfo = (errorOrInfo) => ({
