@@ -52,7 +52,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    phone = serializers.IntegerField(required=True)
+    phone = serializers.CharField(required=True)
     password = serializers.CharField(
         max_length=128, required=True, write_only=True)
 

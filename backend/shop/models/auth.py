@@ -38,7 +38,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, default='')
     last_name = models.CharField(max_length=100, default='')
-    phone = models.IntegerField(null=False, unique=True)
+    phone = models.CharField(null=False, unique=True, max_length=12)
     date_joined = models.DateTimeField(
         default=timezone.now)
     is_staff = models.BooleanField(default=False)
