@@ -38,32 +38,40 @@ class SignUpView(APIView):
 class LoginView(APIView):
 
     def post(self, request, format=None):
-        # Create token & save
-        loginSerializer = LoginSerializer(data=request.data)
+        user = None
+        token = None
+        # If already authenticated return info
+        if (request.user.is_authenticated):
+            user = request.user
+            token = request.auth.key
 
-        if loginSerializer.is_valid():
-            # Generate a new token and return in response
-            loginSerializer.validated_data.pop('password')
-
-            user = User.objects.get(
-                phone=loginSerializer.validated_data.get('phone'))
-            token = loginSerializer.get_auth_token()
-
-            shopOwnerSerializer = ShopOwnerSerializer(
-                instance=user, context={'request': request})
-
-            response = {
-                'id': user.id,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'phone': user.phone,
-                'date_joined': user.date_joined,
-                'owner_shops': shopOwnerSerializer.data.get('owner_shops', None),
-                'token': token
-            }
-            return Response(response, status=status.HTTP_200_OK)
+        # Validate & return info
         else:
-            return Response(loginSerializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+            # Create token & save
+            loginSerializer = LoginSerializer(data=request.data)
+            if loginSerializer.is_valid():
+                # Generate a new token and return in response
+                loginSerializer.validated_data.pop('password')
+
+                user = User.objects.get(
+                    phone=loginSerializer.validated_data.get('phone'))
+                token = loginSerializer.get_auth_token()
+            else:
+                return Response(loginSerializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+
+        shopOwnerSerializer = ShopOwnerSerializer(
+            instance=user, context={'request': request})
+
+        response = {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'phone': user.phone,
+            'date_joined': user.date_joined,
+            'owner_shops': shopOwnerSerializer.data.get('owner_shops', None),
+            'token': token
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class LogoutView(APIView):
