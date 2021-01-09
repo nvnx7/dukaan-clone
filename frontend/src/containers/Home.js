@@ -52,8 +52,9 @@ function Home({
   const classes = useStyles();
 
   useEffect(() => {
+    console.log("Trying login!");
     tryTokenLogin();
-  });
+  }, []);
 
   if (user.authenticated) {
     return <Redirect to="/dashboard" />;
