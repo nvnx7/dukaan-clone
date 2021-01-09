@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication
@@ -22,3 +23,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         category = ProductCategory.objects.get(
             pk=self.request.data.get('category'))
         serializer.save(shop=shop, category=category)
+
+    def perform_update(self, serializer):
+        product = get_object_or_404(self.queryset, pk=self.kwargs.get('pk'))
+        category = get_object_or_404(
+            ProductCategory, pk=self.request.data.get('category'))
+        serializer.save(shop=product.shop, category=category)
