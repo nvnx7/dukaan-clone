@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 100,
   },
   image: {
-    backgroundColor: "red",
     backgroundImage: `url(${bgImage})`,
     backgroundPosition: "center center",
     backgroundRepeat: "no-repeat",
