@@ -74,8 +74,9 @@ export const getShopDetail = (shopUrl) => {
         dispatch(getShopDetailSuccess(shopDetail));
       })
       .catch((error) => {
-        const errors = error.response.data;
-        dispatch(getShopDetailFailure(errors));
+        // const errors = error.response.data;
+        console.log(error);
+        dispatch(getShopDetailFailure("Failed to get shop!"));
       });
   };
 };
