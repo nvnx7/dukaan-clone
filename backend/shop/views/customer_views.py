@@ -14,13 +14,6 @@ from ..serializers.product_serializers import ProductSerializer
 from ..permissions import IsOrderReceiverOrCreateOnly
 
 
-# class CustomerViewSet(viewsets.ModelViewSet):
-#     queryset = Customer.objects.all()
-#     serializer_class = CustomerSerializer
-
-#     permission_classes = [IsOwnerOrCreateOnly]
-
-
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer

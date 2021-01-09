@@ -3,7 +3,6 @@ from .views.root_view import index
 from .views import auth_views, shop_views, product_views, customer_views
 
 from rest_framework.urlpatterns import format_suffix_patterns
-# from rest_framework.authtoken.views import obtain_auth_token
 
 owner_detail = shop_views.ShopOwnerViewSet.as_view({
     'get': 'retrieve',
@@ -36,14 +35,6 @@ product_detail = product_views.ProductViewSet.as_view({
     'delete': 'destroy'
 })
 
-# customer_list = customer_views.CustomerViewSet.as_view({
-#     'post': 'create'
-# })
-
-# customer_detail = customer_views.CustomerViewSet.as_view({
-#     'get': 'retrieve'
-# })
-
 order_list = customer_views.OrderViewSet.as_view({
     'get': 'list',
     'post': 'create_multiple'
@@ -61,7 +52,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
 
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
-    # path('locked/', auth_views.LockedView.as_view(), name='locked'),
 
     path('shopowner/<int:pk>/', owner_detail, name='owner-detail'),
     path('shopowner/<int:owner_id>/shops/', shop_list, name='shop-list'),
@@ -71,11 +61,7 @@ urlpatterns = [
     path('shop/<int:shop_id>/orders/', order_list, name='order-list'),
     path('shop/<int:shop_id>/orders/<int:order_id>/',
          order_detail, name='order-detail'),
-
     path('products/<int:pk>/', product_detail, name='product-detail'),
-
-    # path('customer/<int:pk>/', customer_detail, name='customer-detail'),
-    # path('customers/', customer_list, name='customer-list'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
