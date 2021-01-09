@@ -34,8 +34,8 @@ class ShopViewSet(viewsets.ModelViewSet):
         shopSerializer = ShopSerializer(
             instance=shop, context={'request': request})
 
-        # If user is not authenticated owner of shop send only shop & products details
-        if not request.user.is_authenticated:
+        # If user is not authenticated or owner of  thisshop send only shop & products details
+        if not request.user.is_authenticated or not (shop.owner == request.user):
             customer_shop_serializer = CustomerShopSerializer(
                 instance=shop, context={'request': request})
             response = dict(customer_shop_serializer.data)
