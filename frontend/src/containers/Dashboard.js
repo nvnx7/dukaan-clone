@@ -36,11 +36,13 @@ import {
   errorMessage,
   infoMessage,
   drawerOpen,
+  loading,
 } from "../selectors/dashboardSelectors";
 
 import {
   changeTab,
   getShopDetail,
+  updateShopsList,
   hideErrorInfo,
   toggleDrawer,
   copyShopLink,
@@ -111,9 +113,11 @@ function Dashboard({
   error,
   info,
   drawerOpen,
+  loading,
 
   // dispatchers
   getShopDetail,
+  updateShopsList,
   changeTab,
   hideErrorInfo,
   copyShopLink,
@@ -130,14 +134,17 @@ function Dashboard({
     ) {
       getShopDetail(user["owner_shops"][selectedShop]);
     }
+
+    return () => {
+      updateShopsList([]);
+    };
   }, []);
 
   // Redirect to Home if not authenticated
   if (!user.authenticated) return <Redirect to="/" />;
 
   // Return empty shop view if no shop added
-  if (!user["owner_shops"] || user["owner_shops"].length === 0)
-    return <NoShopView user={user} />;
+  if (!loading && shopsList.length === 0) return <NoShopView user={user} />;
 
   const handleTabChange = (e, newValue) => {
     changeTab(newValue);
@@ -379,6 +386,7 @@ const mapStateToProps = (state) => {
     error: errorMessage(state),
     info: infoMessage(state),
     drawerOpen: drawerOpen(state),
+    loading: loading(state),
   };
 };
 
@@ -386,6 +394,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     changeTab: (tabValue) => dispatch(changeTab(tabValue)),
     getShopDetail: (shopUrl) => dispatch(getShopDetail(shopUrl)),
+    updateShopsList: (shopsList) => dispatch(updateShopsList(shopsList)),
     hideErrorInfo: () => dispatch(hideErrorInfo()),
     toggleDrawer: () => dispatch(toggleDrawer()),
     copyShopLink: (shopDetail) => dispatch(copyShopLink(shopDetail)),
