@@ -14,9 +14,7 @@ import {
 
 const initialState = {
   loading: false,
-  user: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
-    : { authenticated: false },
+  user: { authenticated: false, owner_shops: [] },
   error: "",
 };
 
@@ -39,9 +37,18 @@ const authReducer = (state = initialState, action) => {
     case AUTH_LOGOUT_REQUEST:
       return { ...state, loading: true };
     case AUTH_LOGOUT_SUCCESS:
-      return { ...state, user: { authenticated: false }, loading: false };
+      return {
+        ...state,
+        user: { authenticated: false, owner_shops: [] },
+        loading: false,
+      };
     case AUTH_LOGOUT_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return {
+        ...state,
+        loading: false,
+        user: { authenticated: false, owner_shops: [] },
+        error: action.payload,
+      };
 
     case AUTH_UPDATE_USER:
       return { ...state, user: action.payload };

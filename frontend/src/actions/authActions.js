@@ -40,16 +40,12 @@ export const login = (userData) => {
   return (dispatch) => {
     dispatch(loginRequest());
     axiosInstance()
-      .post("/login/", {
-        phone: userData.phone,
-        password: userData.password,
-      })
+      .post("/login/", userData)
       .then((response) => {
         const userInfo = response.data;
         localStorage.setItem("token", userInfo.token);
         delete userInfo.token;
         userInfo.authenticated = true;
-        localStorage.setItem("user", JSON.stringify(userInfo));
         dispatch(loginSuccess(userInfo));
       })
       .catch((error) => {
@@ -63,6 +59,26 @@ export const login = (userData) => {
 
         dispatch(loginFailure(errorMsg));
       });
+  };
+};
+export const tryTokenLogin = () => {
+  return (dispatch) => {
+    if (localStorage.getItem("token")) {
+      dispatch(loginRequest());
+      axiosInstance()
+        .post("/login/")
+        .then((response) => {
+          const userInfo = response.data;
+          localStorage.setItem("token", userInfo.token);
+          delete userInfo.token;
+          userInfo.authenticated = true;
+          dispatch(loginSuccess(userInfo));
+        })
+        .catch((error) => {
+          console.log(error);
+          localStorage.removeItem("token");
+        });
+    }
   };
 };
 
@@ -99,7 +115,7 @@ export const register = (userData) => {
         dispatch(registerSuccess(userInfo));
       })
       .catch((error) => {
-        const errors = error.response.data;
+        const errors = error.response ? error.response.data : {};
         let errorMsg = "";
         if (errors["first_name"]) errorMsg = errors["first_name"][0];
         if (errors["last_name"]) errorMsg = errors["last_name"][0];
@@ -109,6 +125,7 @@ export const register = (userData) => {
           errorMsg = errors["non_field_errors"][0];
         else errorMsg = "Something went wrong!";
 
+        console.log(errors);
         dispatch(registerFailure(errorMsg));
       });
   };
@@ -135,10 +152,10 @@ export const logout = () => {
       .post("/logout/")
       .then((response) => {
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
         dispatch(logoutSuccess());
       })
       .catch((error) => {
+        localStorage.removeItem("token");
         const errors = error.response.data;
         let errorMsg = "";
         if (errors["phone"]) errorMsg = errors["phone"][0];
@@ -146,7 +163,6 @@ export const logout = () => {
         else if (errors["non_field_errors"])
           errorMsg = errors["non_field_errors"][0];
         else errorMsg = "Something went wrong!";
-
         dispatch(logoutFailure(errorMsg));
       });
   };
