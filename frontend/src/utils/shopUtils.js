@@ -52,6 +52,16 @@ export function sortOrdersByStatusAndDate(orders) {
   return orders;
 }
 
+export function updateShopsList(shopsList, shopDetail) {
+  const updatedShopsList = shopsList.slice(0);
+  const idx = shopsList.findIndex((shop) => shop.id === shopDetail.id);
+
+  if (idx < 0) updatedShopsList.push(shopDetail);
+  else updatedShopsList[idx] = shopDetail;
+
+  return updatedShopsList;
+}
+
 export function getActiveOrdersCount(shopDetail) {
   if (!shopDetail || !shopDetail.orders) return 0;
   return shopDetail.orders.reduce((total, order) => {
