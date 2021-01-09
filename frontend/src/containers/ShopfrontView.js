@@ -46,8 +46,9 @@ import {
 } from "../selectors/customerSelectors";
 import {
   getCustomerShop,
-  updateProductCount,
+  updateBagProductCount,
   togglePlaceOrderFormDialog,
+  placeOrder,
   hideErrorInfo,
 } from "../actions/customerActions";
 import {
@@ -69,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bagContainer: {
     position: "relative",
+    minHeight: "400px",
     maxWidth: "1000px",
   },
   fab: {
@@ -92,6 +94,7 @@ function ShopfrontView({
   updateProductCount,
   hideErrorInfo,
   togglePlaceOrderFormDialog,
+  placeOrder,
 }) {
   const classes = useStyles();
   const { shopId } = useParams();
@@ -111,6 +114,7 @@ function ShopfrontView({
   const handlePlaceOrder = (customerData) => {
     const orderData = getOrderDataFromBag(bag, customerData);
     console.log(orderData);
+    placeOrder(shopDetail, orderData);
   };
 
   let shopProductsData = shopDetail["shop_products"] || [];
@@ -235,6 +239,7 @@ function ShopfrontView({
                         color="primary"
                         variant="extended"
                         onClick={togglePlaceOrderFormDialog}
+                        disabled={bag && bag.length <= 0}
                       >
                         <DoneRoundedIcon />
                         Place Order
@@ -352,8 +357,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getCustomerShop: (shopId) => dispatch(getCustomerShop(shopId)),
     updateProductCount: (bag, product, count) =>
-      dispatch(updateProductCount(bag, product, count)),
+      dispatch(updateBagProductCount(bag, product, count)),
     togglePlaceOrderFormDialog: () => dispatch(togglePlaceOrderFormDialog),
+    placeOrder: (shopDetail, orderData) =>
+      dispatch(placeOrder(shopDetail, orderData)),
     hideErrorInfo: () => dispatch(hideErrorInfo()),
   };
 };
