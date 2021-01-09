@@ -123,15 +123,21 @@ function Dashboard({
   const match = useRouteMatch();
 
   useEffect(() => {
-    if (user.authenticated && user["owner_shops"][selectedShop])
+    if (
+      user.authenticated &&
+      user["owner_shops"] &&
+      user["owner_shops"][selectedShop]
+    ) {
       getShopDetail(user["owner_shops"][selectedShop]);
+    }
   }, []);
 
   // Redirect to Home if not authenticated
   if (!user.authenticated) return <Redirect to="/" />;
 
   // Return empty shop view if no shop added
-  if (user["owner_shops"].length === 0) return <NoShopView user={user} />;
+  if (!user["owner_shops"] || user["owner_shops"].length === 0)
+    return <NoShopView user={user} />;
 
   const handleTabChange = (e, newValue) => {
     changeTab(newValue);
