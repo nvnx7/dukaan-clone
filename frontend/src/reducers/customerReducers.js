@@ -3,6 +3,9 @@ import {
   CUSTOMER_GET_SHOP_SUCCESS,
   CUSTOMER_GET_SHOP_FAILURE,
   UPDATE_BAG,
+  CUSTOMER_PLACE_ORDER_REQUEST,
+  CUSTOMER_PLACE_ORDER_SUCCESS,
+  CUSTOMER_PLACE_ORDER_FAILURE,
   TOGGLE_PLACE_ORDER_FORM_DIALOG,
   CUSTOMER_SET_ERROR_OR_INFO,
   CUSTOMER_ERROR_INFO_HIDE,
@@ -37,6 +40,18 @@ const customerReducer = (state = initialState, action) => {
         ...state,
         placeOrderFormDialogOpen: !state.placeOrderFormDialogOpen,
       };
+
+    case CUSTOMER_PLACE_ORDER_REQUEST:
+      return { ...state, loading: true };
+    case CUSTOMER_PLACE_ORDER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        info: "Successfully Placed Order!",
+        placeOrderFormDialogOpen: false,
+      };
+    case CUSTOMER_PLACE_ORDER_FAILURE:
+      return { ...state, loading: false, error: action.payload, info: "" };
 
     case CUSTOMER_SET_ERROR_OR_INFO:
       const errorOrInfo = action.payload;

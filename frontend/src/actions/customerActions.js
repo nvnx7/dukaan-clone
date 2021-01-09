@@ -9,6 +9,11 @@ export const CUSTOMER_GET_SHOP_FAILURE = "CUSTOMER_GET_SHOP_FAILURE";
 // Bag Actions
 export const UPDATE_BAG = "UPDATE_BAG";
 
+// Place Order Actions
+export const CUSTOMER_PLACE_ORDER_REQUEST = "CUSTOMER_PLACE_ORDER_REQUEST";
+export const CUSTOMER_PLACE_ORDER_SUCCESS = "CUSTOMER_PLACE_ORDER_SUCCESS";
+export const CUSTOMER_PLACE_ORDER_FAILURE = "CUSTOMER_PLACE_ORDER_FAILURE";
+
 export const TOGGLE_PLACE_ORDER_FORM_DIALOG = "TOGGLE_PLACE_ORDER_FORM_DIALOG";
 
 // Error/Info message actions
@@ -52,12 +57,39 @@ export const getCustomerShop = (shopId) => {
 
 // Bag action creators
 export const updateBag = (bag) => ({ type: UPDATE_BAG, payload: bag });
-export const updateProductCount = (bag, product, count) => {
+export const updateBagProductCount = (bag, product, count) => {
   return (dispatch) => {
     console.log(`${count} ${product.id}`);
     const updatedBag = updateProductCountInBag(bag, product, count);
     localStorage.setItem("bag", JSON.stringify(updatedBag));
     dispatch(updateBag(updatedBag));
+  };
+};
+
+// Place Order action creators
+export const placeOrderRequest = () => ({ type: CUSTOMER_PLACE_ORDER_REQUEST });
+export const placeOrderSuccess = (orderData) => ({
+  type: CUSTOMER_PLACE_ORDER_SUCCESS,
+  payload: orderData,
+});
+export const placeOrderFailure = (error) => ({
+  type: CUSTOMER_PLACE_ORDER_FAILURE,
+  payload: error,
+});
+export const placeOrder = (shopDetail, orderData) => {
+  return (dispatch) => {
+    dispatch(placeOrderRequest());
+    axiosInstance()
+      .post(`/shop/${shopDetail.id}/orders/`, orderData)
+      .then((response) => {
+        dispatch(placeOrderSuccess(response.data));
+        // Empty bag
+        localStorage.setItem("bag", JSON.stringify([]));
+        dispatch(updateBag([]));
+      })
+      .catch((error) => {
+        dispatch(placeOrderFailure("Failed To Place Order!"));
+      });
   };
 };
 
