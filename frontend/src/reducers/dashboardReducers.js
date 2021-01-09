@@ -12,7 +12,9 @@ import {
   ADD_SHOP_FAILURE,
   UPDATE_SHOP_DETAIL,
   TOGGLE_ADD_SHOP_FORM_DIALOG,
+  UPDATE_SHOP_LIST,
 } from "../actions/dashboardActions";
+import { updateShopsList } from "../utils/shopUtils";
 
 const initialState = {
   tabValue: 0,
@@ -54,7 +56,7 @@ const dashboardReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        shopsList: [...state.shopsList, action.payload],
+        shopsList: updateShopsList(state.shopsList, action.payload),
       };
     case GET_SHOP_DETAIL_FAILURE:
       return { ...state, loading: false, error: action.payload };
@@ -77,18 +79,15 @@ const dashboardReducer = (state = initialState, action) => {
       return { ...state, loading: false, error: action.payload };
 
     case UPDATE_SHOP_DETAIL:
-      const updatedShopDetail = action.payload;
-      const updatedShopsList = state.shopsList.map((shopDetail) => {
-        if (shopDetail.id === updatedShopDetail.id) return updatedShopDetail;
-        return shopDetail;
-      });
       return {
         ...state,
         loading: false,
         error: "",
         info: "Successfully Updated Shop!",
-        shopsList: updatedShopsList,
+        shopsList: updateShopsList(state.shopsList, action.payload),
       };
+    case UPDATE_SHOP_LIST:
+      return { ...state, shopsList: action.payload };
 
     case TOGGLE_ADD_SHOP_FORM_DIALOG:
       return { ...state, addShopDialogFormOpen: !state.addShopDialogFormOpen };
