@@ -6,6 +6,7 @@ import ShopProductListTile from "./ShopProductListTile";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    width: "100%",
     height: "100%",
   },
   itemList: {
@@ -21,6 +22,7 @@ export default function ShopProductList({ productsData, onChangeCount }) {
   return (
     <Box
       className={classes.root}
+      fullWidth
       p={1}
       display="flex"
       flexDirection="column"
@@ -35,6 +37,7 @@ export default function ShopProductList({ productsData, onChangeCount }) {
         <Grid
           className={classes.itemList}
           container
+          fullWidth
           spacing={2}
           alignItems="flex-start"
           justify="flex-start"
