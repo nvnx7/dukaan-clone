@@ -1,7 +1,8 @@
+from django.shortcuts import get_object_or_404
+from rest_framework import permissions
 from .models.product import Product
 from .models.shop import Shop
 from .models.customer import Order
-from rest_framework import permissions
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -37,7 +38,7 @@ class IsOrderReceiverOrCreateOnly(permissions.BasePermission):
 
             if 'shop_id' in view.kwargs and view.kwargs['shop_id']:
                 shop_id = view.kwargs['shop_id']
-                shop = Shop.objects.get(pk=shop_id)
+                shop = get_object_or_404(Shop, pk=shop_id)
 
                 # If not owner of this shop deny permission
                 if not shop.owner == request.user:
@@ -46,7 +47,7 @@ class IsOrderReceiverOrCreateOnly(permissions.BasePermission):
                 # If ordered product is not of this owner's shop deny permission
                 if 'order_id' in view.kwargs and view.kwargs['order_id']:
                     order_id = view.kwargs['order_id']
-                    order = Order.objects.get(pk=order_id)
+                    order = get_object_or_404(Order, pk=order_id)
                     return order.product.shop == shop
 
             return True
@@ -64,11 +65,9 @@ class IsProductSellerOrReadOnly(permissions.BasePermission):
             return True
         elif request.method in ('PATCH', 'DELETE'):
             if 'pk' in view.kwargs and view.kwargs['pk']:
-                pk = view.kwargs['pk']
-                product = Product.objects.get(pk=pk)
+                product = get_object_or_404(Product, pk=view.kwargs['pk'])
                 return product.shop.owner == request.user
         elif request.method == 'POST':
             if 'pk' in view.kwargs and view.kwargs['pk']:
-                pk = view.kwargs['pk']
-                shop = Shop.objects.get(pk=pk)
+                shop = get_object_or_404(Shop, pk=view.kwargs['pk'])
                 return shop.owner == request.user
