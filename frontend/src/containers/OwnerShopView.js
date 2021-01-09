@@ -96,7 +96,7 @@ function OwnerShopView({
   const handleUpdateOrderStatus = (order) =>
     updateOrderStatus(shopDetail, order);
 
-  const paths = ["/", "/orders", "/shop"];
+  const paths = ["/", "/orders", "/stats"];
   const redirect = <Redirect to={`${routeMatch.path}${paths[tabValue]}`} />;
 
   const activeOrdersCount = getActiveOrdersCount(shopDetail);
@@ -119,7 +119,7 @@ function OwnerShopView({
           </Container>
         </Route>
 
-        <Route path={`${routeMatch.path}/shop`}>
+        <Route path={`${routeMatch.path}/stats`}>
           <Grid container fullWidth spacing={2}>
             <Grid item xs={6} lg={3}>
               <Card>
