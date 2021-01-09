@@ -51,6 +51,7 @@ const validationSchema = yup.object({
 export default function EditProductForm({
   product,
   loading,
+  categories,
   onSave,
   onCancel,
   onDelete,
@@ -179,6 +180,7 @@ export default function EditProductForm({
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
+
                 <MenuItem value={"pc"}>Piece</MenuItem>
                 <MenuItem value={"kg"}>kilogram</MenuItem>
                 <MenuItem value={"g"}>gram</MenuItem>
@@ -223,14 +225,9 @@ export default function EditProductForm({
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value="1">Grocery</MenuItem>
-                <MenuItem value="2">Electronics</MenuItem>
-                <MenuItem value="3">Fast Food</MenuItem>
-                <MenuItem value="4">Garments</MenuItem>
-                {/* <MenuItem value="4">Stationary</MenuItem> */}
-
-                {/* <MenuItem value="5">millilitre</MenuItem>
-              <MenuItem value="6">dozen</MenuItem> */}
+                {categories.map((category) => (
+                  <MenuItem value={category.id}>{category.title}</MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>

@@ -53,7 +53,12 @@ const validationSchema = yup.object({
   category: yup.string().required("Unit is required!"),
 });
 
-export default function AddProductForm({ loading, onSave, onCancel }) {
+export default function AddProductForm({
+  loading,
+  onSave,
+  onCancel,
+  categories,
+}) {
   const classes = useStyles();
 
   const [file, setFile] = useState(null);
@@ -226,12 +231,9 @@ export default function AddProductForm({ loading, onSave, onCancel }) {
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value="1">Grocery</MenuItem>
-                <MenuItem value="2">Fast Food</MenuItem>
-                <MenuItem value="3">Garments</MenuItem>
-                <MenuItem value="4">Stationary</MenuItem>
-                {/* <MenuItem value="5">millilitre</MenuItem>
-              <MenuItem value="6">dozen</MenuItem> */}
+                {categories.map((category) => (
+                  <MenuItem value={category.id}>{category.title}</MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>

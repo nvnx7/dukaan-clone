@@ -252,6 +252,7 @@ function OwnerShopView({
             onSave={handleEditProduct}
             onDelete={handleDeleteProduct}
             onCancel={hideProductFormDialog}
+            categories={shopDetail["product_categories"] || []}
           />
         </DialogContent>
       </Dialog>
@@ -267,6 +268,7 @@ function OwnerShopView({
             loading={shopLoading}
             onSave={handleAddProduct}
             onCancel={hideProductFormDialog}
+            categories={shopDetail["product_categories"] || []}
           />
         </DialogContent>
       </Dialog>
