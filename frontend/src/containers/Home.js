@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Typography, Paper, Snackbar } from "@material-ui/core";
@@ -9,7 +9,12 @@ import LoginForm from "../components/LoginForm";
 import SignUpForm from "../components/SignUpForm";
 import Alert from "../components/Alert";
 import { userInfo, authError, authLoading } from "../selectors/authSelectors";
-import { login, register, hideError } from "../actions/authActions";
+import {
+  login,
+  register,
+  hideError,
+  tryTokenLogin,
+} from "../actions/authActions";
 
 import bgImage from "../images/dukan.jpg";
 
@@ -35,8 +40,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Home({ user, loading, error, login, register, hideError }) {
+function Home({
+  user,
+  loading,
+  error,
+  login,
+  register,
+  hideError,
+  tryTokenLogin,
+}) {
   const classes = useStyles();
+
+  useEffect(() => {
+    tryTokenLogin();
+  });
 
   if (user.authenticated) {
     return <Redirect to="/dashboard" />;
@@ -98,15 +115,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    hideError: () => {
-      dispatch(hideError());
-    },
-    login: (user) => {
-      dispatch(login(user));
-    },
-    register: (user) => {
-      dispatch(register(user));
-    },
+    hideError: () => dispatch(hideError()),
+    login: (user) => dispatch(login(user)),
+    register: (user) => dispatch(register(user)),
+    tryTokenLogin: () => dispatch(tryTokenLogin()),
   };
 };
 
