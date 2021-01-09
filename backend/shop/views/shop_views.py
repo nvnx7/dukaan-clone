@@ -1,3 +1,4 @@
+
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import viewsets
@@ -9,6 +10,7 @@ from ..models.shop import Shop
 from ..models.auth import User
 from ..models.customer import Order
 from ..serializers.shop_serializers import ShopSerializer, ShopOwnerSerializer, CustomerShopSerializer
+from ..serializers.product_serializers import ProductCategorySerializer
 from ..serializers.customer_serializers import OrderSerializer
 from ..permissions import IsOwnerOrReadOnly
 
@@ -31,7 +33,7 @@ class ShopViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         shop_id = kwargs['pk']
         shop = get_object_or_404(self.queryset, pk=shop_id)
-        shopSerializer = ShopSerializer(
+        shop_serializer = ShopSerializer(
             instance=shop, context={'request': request})
 
         # If user is not authenticated or owner of  thisshop send only shop & products details
@@ -42,13 +44,15 @@ class ShopViewSet(viewsets.ModelViewSet):
             response['contact'] = shop.owner.phone
             return Response(response, status=status.HTTP_200_OK)
 
-        # Else include all order details to this shop
+        # Else include all order details & product categories to this shop
         orders = Order.objects.filter(shop=shop_id)
-        ordersSerializer = OrderSerializer(
+        orders_serializer = OrderSerializer(
             instance=orders, many=True, context={'request': request})
+        product_categories = ProductCategorySerializer.get_all_categories()
 
-        response = dict(shopSerializer.data)
-        response['orders'] = list(ordersSerializer.data)
+        response = dict(shop_serializer.data)
+        response['orders'] = list(orders_serializer.data)
+        response['product_categories'] = product_categories
         return Response(response, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):

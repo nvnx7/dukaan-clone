@@ -18,3 +18,8 @@ class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCategory
         fields = '__all__'
+
+    @staticmethod
+    def get_all_categories():
+        product_categories = ProductCategory.objects.all()
+        return list(ProductCategorySerializer(instance=product_categories, many=True).data)
