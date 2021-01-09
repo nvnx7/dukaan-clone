@@ -33,7 +33,7 @@ class ShopViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         shop_id = kwargs['pk']
         shop = get_object_or_404(self.queryset, pk=shop_id)
-        shop_serializer = ShopSerializer(
+        shop_serializer = self.get_serializer(
             instance=shop, context={'request': request})
 
         # If user is not authenticated or owner of  thisshop send only shop & products details
@@ -61,9 +61,22 @@ class ShopViewSet(viewsets.ModelViewSet):
         """
         owner_id = kwargs['owner_id']
         shops = self.queryset.filter(owner_id=owner_id)
-        serializer = ShopSerializer(
+        serializer = self.get_serializer(
             instance=shops, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
+        shop_detail = request.data
+        serializer = self.get_serializer(data=shop_detail)
+
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            response = dict(serializer.data)
+            product_categories = ProductCategorySerializer.get_all_categories()
+            response['product_categories'] = product_categories
+            return Response(response, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
