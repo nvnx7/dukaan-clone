@@ -6,14 +6,13 @@ import {
   Toolbar,
   Typography,
   Button,
-  ButtonGroup,
+  Box,
   Link,
 } from "@material-ui/core";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Switch, Route } from "react-router-dom";
 
 import { logout } from "../actions/authActions";
-import { userInfo } from "../selectors/authSelectors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Header({ user, logout }) {
+function Header({ logout }) {
   const classes = useStyles();
 
   return (
@@ -38,34 +37,36 @@ function Header({ user, logout }) {
           DUKAAN
         </Typography>
 
-        {user.authenticated ? (
-          <Button variant="contained" onClick={logout}>
-            LOGOUT
-          </Button>
-        ) : (
-          <ButtonGroup variant="contained">
-            <Button>
+        <Switch>
+          <Route path="/dashboard">
+            <Button variant="contained" onClick={logout}>
+              LOGOUT
+            </Button>
+          </Route>
+
+          <Route path="/shop">{}</Route>
+
+          <Route path="/">
+            <Box
+              width="164px"
+              display="flex"
+              container
+              justifyContent="space-between"
+            >
               <Link component={RouterLink} to="/signup" underline="none">
-                SIGNUP
+                <Button variant="contained">SIGNUP</Button>
               </Link>
-            </Button>
-            <Button>
+
               <Link component={RouterLink} to="/" underline="none">
-                LOGIN
+                <Button variant="contained">LOGIN</Button>
               </Link>
-            </Button>
-          </ButtonGroup>
-        )}
+            </Box>
+          </Route>
+        </Switch>
       </Toolbar>
     </AppBar>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    user: userInfo(state),
-  };
-};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -75,4 +76,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(null, mapDispatchToProps)(Header);
