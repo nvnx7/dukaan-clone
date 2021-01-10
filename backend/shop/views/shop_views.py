@@ -36,7 +36,7 @@ class ShopViewSet(viewsets.ModelViewSet):
         shop_serializer = self.get_serializer(
             instance=shop, context={'request': request})
 
-        # If user is not authenticated or owner of  thisshop send only shop & products details
+        # If user is not authenticated or owner of  this shop send only shop & products details
         if not request.user.is_authenticated or not (shop.owner == request.user):
             customer_shop_serializer = CustomerShopSerializer(
                 instance=shop, context={'request': request})
@@ -53,6 +53,7 @@ class ShopViewSet(viewsets.ModelViewSet):
         response = dict(shop_serializer.data)
         response['orders'] = list(orders_serializer.data)
         response['product_categories'] = product_categories
+        response['contact'] = shop.owner.phone
         return Response(response, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
