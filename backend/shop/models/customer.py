@@ -9,7 +9,7 @@ from .shop import Shop
 class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    phone = models.IntegerField(null=False)
+    phone = models.CharField(null=False, unique=True, max_length=12)
 
 
 class Order(models.Model):
