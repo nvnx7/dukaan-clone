@@ -120,98 +120,82 @@ function OwnerShopView({
         </Route>
 
         <Route path={`${routeMatch.path}/stats`}>
-          <Grid container fullWidth spacing={2}>
-            <Grid item xs={6} lg={3}>
-              <Card>
-                <CardContent>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    Active Orders
-                  </Typography>
-                  <Typography variant="h4">{activeOrdersCount}</Typography>
-                  <Typography variant="body2" component="p" color="error">
-                    {pendingOrdersCount} Pending
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+          <Box p={2} display="flex">
+            <Grid container fullWidth spacing={2}>
+              <Grid item xs={6} lg={3}>
+                <Card>
+                  <CardContent>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      gutterBottom
+                    >
+                      Active Orders
+                    </Typography>
+                    <Typography variant="h4">{activeOrdersCount}</Typography>
+                    <Typography variant="body2" component="p" color="error">
+                      {pendingOrdersCount} Pending
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
 
-            <Grid item xs={6} lg={3}>
-              <Card>
-                <CardContent>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    Revenue
-                  </Typography>
-                  <Typography variant="h4">{activeOrdersCount}</Typography>
-                  <Typography variant="body2" component="p" color="error">
-                    {pendingOrdersCount} Pending
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+              <Grid item xs={6} lg={3}>
+                <Card>
+                  <CardContent>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      gutterBottom
+                    >
+                      Total Products
+                    </Typography>
+                    <Typography variant="h4" component="h2">
+                      {productsCount}
+                    </Typography>
+                    <Typography variant="body2" component="p" color="error">
+                      {outOfStockProductsCount} Out Of Stock
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
 
-            <Grid item xs={6} lg={3}>
-              <Card>
-                <CardContent>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    Total Products
-                  </Typography>
-                  <Typography variant="h4" component="h2">
-                    {productsCount}
-                  </Typography>
-                  <Typography variant="body2" component="p" color="error">
-                    {outOfStockProductsCount} Out Of Stock
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+              <Grid item xs={6} lg={3}>
+                <Card>
+                  <CardContent>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      gutterBottom
+                    >
+                      Revenue (Rs.)
+                    </Typography>
+                    <Typography variant="h4">{totalRevenue}</Typography>
+                    <Typography variant="body2" component="p" color="error">
+                      {pendingRevenue} In Process
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
 
-            <Grid item xs={6} lg={3}>
-              <Card>
-                <CardContent>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    Revenue (Rs.)
-                  </Typography>
-                  <Typography variant="h4">{totalRevenue}</Typography>
-                  <Typography variant="body2" component="p" color="error">
-                    {pendingRevenue} In Process
-                  </Typography>
-                </CardContent>
-              </Card>
+              <Grid item xs={12}>
+                <DetailView
+                  title="Shop Details"
+                  details={{
+                    id: shopDetail["id"],
+                    name: shopDetail["title"],
+                    created: new Date(
+                      shopDetail["date_created"]
+                    ).toLocaleString(),
+                    revenue: `INR ${shopDetail["revenue"]}`,
+                    products: shopDetail["shop_products"]
+                      ? shopDetail["shop_products"].length
+                      : 0,
+                  }}
+                />
+              </Grid>
             </Grid>
-
-            <Grid item xs={12}>
-              <DetailView
-                title="Shop Details"
-                details={{
-                  id: shopDetail["id"],
-                  name: shopDetail["title"],
-                  created: new Date(
-                    shopDetail["date_created"]
-                  ).toLocaleString(),
-                  revenue: `INR ${shopDetail["revenue"]}`,
-                  products: shopDetail["shop_products"]
-                    ? shopDetail["shop_products"].length
-                    : 0,
-                }}
-              />
-            </Grid>
-          </Grid>
+          </Box>
         </Route>
 
         <Route path={`${routeMatch.path}/`}>
