@@ -18,9 +18,9 @@ Following is list of major tools that were utilized to develop the app:<br>
 
 App Previews: <br><br>
 <img src="./previews/home.jpg" width="425" alt="customer shop"/> <br>
-<img src="./previews/customer-shop.jpg" width="425" alt="customer shop"/> <img src="./previews/customer-bag.jpg" width="425" alt="customer bag"/>
+<img src="./previews/customer-shop.jpg" width="400" alt="customer shop"/> <img src="./previews/customer-bag.jpg" width="400" alt="customer bag"/>
 <br>
-<img src="./previews/owner-shop.jpg" width="425" alt="owner shop"/> <img src="./previews/owner-orders.jpg" width="425" alt="owner orders"/>
+<img src="./previews/owner-shop.jpg" width="400" alt="owner shop"/> <img src="./previews/owner-orders.jpg" width="400" alt="owner orders"/>
 
 ## Setup
 
